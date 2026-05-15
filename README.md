@@ -24,6 +24,20 @@ uv run oss-scan report --today
 `GITHUB_TOKEN` is optional for small manual runs, but recommended to avoid low
 unauthenticated API rate limits.
 
+## Scheduled runs
+
+GitHub Actions runs the optional daily scan around 09:00 Asia/Hong_Kong
+(`01:00 UTC`) using `.github/workflows/daily-scan.yml`. It can also be started
+manually from the Actions tab because the workflow supports `workflow_dispatch`.
+
+For a local Windows schedule, create a Windows Task Scheduler task that calls
+`scripts/run-daily-scan.ps1` with PowerShell. If authenticated GitHub API access
+is needed, set `GITHUB_TOKEN` in the user or task environment before the script
+runs.
+
+Scheduled runs write Markdown reports under `reports/`. The local SQLite history
+database is stored at `data/scanner.sqlite`.
+
 ## Commands
 
 ```powershell
