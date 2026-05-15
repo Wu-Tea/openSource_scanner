@@ -163,7 +163,14 @@ def feedback(
 
 
 def _parse_feedback_statuses(value: str) -> tuple[FeedbackStatus, ...]:
-    statuses = tuple(status.strip() for status in value.split(",") if status.strip())
+    statuses = tuple(status.strip().lower() for status in value.split(",") if status.strip())
+    if not statuses:
+        console.print(
+            "[red]No shortlist statuses provided. Use one or more of: "
+            f"{', '.join(FEEDBACK_STATUSES)}[/red]"
+        )
+        raise typer.Exit(code=1)
+
     invalid_statuses = [status for status in statuses if status not in FEEDBACK_STATUSES]
     if invalid_statuses:
         console.print(

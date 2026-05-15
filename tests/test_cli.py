@@ -143,6 +143,69 @@ def test_shortlist_rejects_invalid_status(tmp_path: Path, monkeypatch) -> None:
     assert not output_path.exists()
 
 
+def test_shortlist_rejects_empty_status_value(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("OSS_SCANNER_DB", str(tmp_path / "scanner.sqlite"))
+    output_path = tmp_path / "reports" / "shortlist.md"
+
+    result = runner.invoke(cli.app, ["shortlist", "--statuses", "", "--output", str(output_path)])
+
+    assert result.exit_code == 1
+    assert "No shortlist statuses provided" in result.output
+    assert not output_path.exists()
+
+
+def test_shortlist_rejects_comma_only_statuses(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("OSS_SCANNER_DB", str(tmp_path / "scanner.sqlite"))
+    output_path = tmp_path / "reports" / "shortlist.md"
+
+    result = runner.invoke(
+        cli.app,
+        ["shortlist", "--statuses", " , ", "--output", str(output_path)],
+    )
+
+    assert result.exit_code == 1
+    assert "No shortlist statuses provided" in result.output
+    assert not output_path.exists()
+
+
+def test_shortlist_normalizes_statuses_to_lowercase(tmp_path: Path, monkeypatch) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    store = OpportunityStore(db_path)
+    store.initialize()
+    store.upsert_opportunity(
+        Opportunity(
+            source="github",
+            source_id="123",
+            title="demo/agent-kit",
+            url="https://github.com/demo/agent-kit",
+            description="Deployable agent workflow dashboard",
+            project="demo/agent-kit",
+            language="Python",
+            topics=["ai", "agent"],
+            stars=1200,
+            forks=90,
+            open_issues=12,
+            pushed_at=datetime(2026, 5, 10, 12, 30, tzinfo=UTC),
+            archived=False,
+            license_spdx_id="mit",
+            packaging_signals=["deploy", "dashboard"],
+        ),
+        ScoreBreakdown(total=88, reasons=["preferred license: mit"], penalties=[]),
+        seen_at=datetime(2026, 5, 15, 9, 30, tzinfo=UTC),
+    )
+    assert store.set_feedback("github", "123", "package") is True
+    output_path = tmp_path / "reports" / "shortlist.md"
+
+    result = runner.invoke(
+        cli.app,
+        ["shortlist", "--statuses", "Package,Watch", "--output", str(output_path)],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert "demo/agent-kit" in output_path.read_text(encoding="utf-8")
+
+
 def test_memo_command_writes_existing_opportunity(tmp_path: Path, monkeypatch) -> None:
     db_path = tmp_path / "scanner.sqlite"
     monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))

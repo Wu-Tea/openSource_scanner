@@ -168,6 +168,37 @@ def test_list_by_feedback_returns_empty_for_empty_statuses(tmp_path: Path):
     assert store.list_by_feedback([], limit=10) == []
 
 
+def test_list_by_feedback_uses_stable_tie_breakers_for_equal_priority_rows(tmp_path: Path):
+    db_path = tmp_path / "scanner.sqlite"
+    store = OpportunityStore(db_path)
+    store.initialize()
+    seen_at = datetime(2026, 5, 15, 9, 30, tzinfo=UTC)
+
+    store.upsert_opportunity(
+        _opportunity("gamma", title="Gamma Tool", stars=100),
+        _score(80),
+        seen_at,
+    )
+    store.upsert_opportunity(
+        _opportunity("alpha-2", title="alpha tool", stars=100),
+        _score(80),
+        seen_at,
+    )
+    store.upsert_opportunity(
+        _opportunity("alpha-1", title="Alpha Tool", stars=100),
+        _score(80),
+        seen_at,
+    )
+
+    assert store.set_feedback("github", "gamma", "package") is True
+    assert store.set_feedback("github", "alpha-2", "package") is True
+    assert store.set_feedback("github", "alpha-1", "package") is True
+
+    rows = store.list_by_feedback(["package"], limit=10)
+
+    assert [row["source_id"] for row in rows] == ["alpha-1", "alpha-2", "gamma"]
+
+
 def test_upsert_json_encodes_lists_without_ascii_escaping(tmp_path: Path):
     db_path = tmp_path / "scanner.sqlite"
     store = OpportunityStore(db_path)

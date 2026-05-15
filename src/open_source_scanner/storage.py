@@ -200,7 +200,10 @@ class OpportunityStore:
                         ELSE 5
                     END,
                     score DESC,
-                    stars DESC
+                    stars DESC,
+                    title COLLATE NOCASE ASC,
+                    source ASC,
+                    source_id ASC
                 LIMIT ?
                 """,
                 (*statuses, limit),
