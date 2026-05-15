@@ -78,6 +78,35 @@ def test_initialize_upsert_feedback_and_ranked_listing(tmp_path: Path):
     assert json.loads(ranked[0]["reasons_json"]) == ["updated score"]
 
 
+def test_get_opportunity_returns_row_for_exact_target(tmp_path: Path):
+    db_path = tmp_path / "scanner.sqlite"
+    store = OpportunityStore(db_path)
+    store.initialize()
+    seen_at = datetime(2026, 5, 15, 9, 30, tzinfo=UTC)
+    store.upsert_opportunity(
+        _opportunity("123", title="demo/agent-kit", stars=1200),
+        _score(88),
+        seen_at,
+    )
+
+    row = store.get_opportunity("github", "123")
+
+    assert row is not None
+    assert row["source"] == "github"
+    assert row["source_id"] == "123"
+    assert row["title"] == "demo/agent-kit"
+    assert row["score"] == 88
+    assert json.loads(row["packaging_signals_json"])
+
+
+def test_get_opportunity_returns_none_for_absent_target(tmp_path: Path):
+    db_path = tmp_path / "scanner.sqlite"
+    store = OpportunityStore(db_path)
+    store.initialize()
+
+    assert store.get_opportunity("github", "missing") is None
+
+
 def test_upsert_json_encodes_lists_without_ascii_escaping(tmp_path: Path):
     db_path = tmp_path / "scanner.sqlite"
     store = OpportunityStore(db_path)

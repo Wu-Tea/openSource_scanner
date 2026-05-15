@@ -11,6 +11,7 @@ from rich.console import Console
 
 from open_source_scanner.config import load_scanner_config
 from open_source_scanner.connectors.github import GitHubConnector, GitHubConnectorError
+from open_source_scanner.memo import write_opportunity_memo
 from open_source_scanner.models import FeedbackStatus
 from open_source_scanner.normalize import normalize_repository
 from open_source_scanner.report import write_report
@@ -93,6 +94,23 @@ def report(
     rows = store.list_ranked(limit=limit)
     output_path = write_report(rows, report_date=report_date, output_dir=output_dir)
     console.print(f"[green]Report written to {output_path}[/green]")
+
+
+@app.command()
+def memo(
+    source: str = typer.Argument(..., help="Opportunity source from the report Feedback target."),
+    source_id: str = typer.Argument(..., help="Source-specific id from the report Feedback target."),
+    output_dir: Path = typer.Option(Path("memos"), help="Memo output directory."),
+) -> None:
+    memo_date = datetime.now(tz=UTC).date().isoformat()
+    store = _store()
+    row = store.get_opportunity(source, source_id)
+    if row is None:
+        console.print(f"[red]No opportunity found for {source}:{source_id}.[/red]")
+        raise typer.Exit(code=1)
+
+    output_path = write_opportunity_memo(row, memo_date=memo_date, output_dir=output_dir)
+    console.print(f"[green]Memo written to {output_path}[/green]")
 
 
 @app.command()

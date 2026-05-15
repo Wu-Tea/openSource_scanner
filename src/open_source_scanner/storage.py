@@ -153,6 +153,18 @@ class OpportunityStore:
             )
             return cursor.rowcount > 0
 
+    def get_opportunity(self, source: str, source_id: str) -> dict[str, Any] | None:
+        with self._connect() as conn:
+            row = conn.execute(
+                """
+                SELECT *
+                FROM opportunities
+                WHERE source = ? AND source_id = ?
+                """,
+                (source, source_id),
+            ).fetchone()
+        return dict(row) if row is not None else None
+
     def list_ranked(self, limit: int) -> list[dict[str, Any]]:
         with self._connect() as conn:
             rows = conn.execute(
