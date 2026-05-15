@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+.worktrees/
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+reports/*.tmp
