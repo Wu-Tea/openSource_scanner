@@ -23,3 +23,19 @@ uv run oss-scan report --today
 
 `GITHUB_TOKEN` is optional for small manual runs, but recommended to avoid low
 unauthenticated API rate limits.
+
+## Commands
+
+```powershell
+uv run oss-scan scan --limit 50
+uv run oss-scan report --today
+uv run oss-scan feedback github 123 package
+```
+
+Feedback statuses:
+
+- `new`: default state
+- `saved`: interesting but not urgent
+- `dismissed`: hide from ranked reports
+- `watch`: keep tracking
+- `package`: create a deeper packaging memo
