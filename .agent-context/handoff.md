@@ -13,11 +13,12 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Final local verification passed: `uv run pytest -v` -> 25 passed; `uv run ruff check src tests` -> all checks passed; PowerShell parser check for `scripts/run-daily-scan.ps1` passed.
 - First small real scan/report verification succeeded with `--limit 1`; generated data was inspected and then removed.
 - Opportunity memo workflow is implemented and verified: `oss-scan memo SOURCE SOURCE_ID` writes Chinese review memos under `memos/` and protects existing files unless `--force` is used.
+- Shortlist pipeline is implemented and verified: `oss-scan shortlist` groups `package`, `watch`, and `saved` opportunities into a Markdown pipeline view.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Build the next workflow step: track shortlist decisions and package-stage experiments across reports and memos.
+Push latest shortlist work, then improve opportunity quality by tuning source queries/scoring or adding richer issue/discussion signals.
 
 ## Blockers
 
@@ -36,6 +37,7 @@ Build the next workflow step: track shortlist decisions and package-stage experi
 - `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`
 - `.agent-context/session-log.md`
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
+- `.agent-context/archive/session-log-2026-05-15-pre-compaction.md` only if deeper pre-compaction detail is needed
 
 ## Do Not Reopen Unless Needed
 
