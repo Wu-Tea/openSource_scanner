@@ -11,11 +11,12 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - GitHub-only MVP is implemented on `main`: config, GitHub connector, normalizer, scoring, SQLite storage, Markdown reports, Typer CLI, README, and workflow docs.
 - Scheduled automation is implemented: GitHub Actions daily scan/report workflow and local Windows helper script.
 - Final local verification passed: `uv run pytest -v` -> 25 passed; `uv run ruff check src tests` -> all checks passed; PowerShell parser check for `scripts/run-daily-scan.ps1` passed.
+- First small real scan/report verification succeeded with `--limit 1`; generated data was inspected and then removed.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Push latest automation commits, then run a small real scan/report verification and inspect report quality.
+Build the next workflow step: generate an opportunity memo from a saved/scanned project so candidates can turn into packaging experiments.
 
 ## Blockers
 
