@@ -101,6 +101,7 @@ def memo(
     source: str = typer.Argument(..., help="Opportunity source from the report Feedback target."),
     source_id: str = typer.Argument(..., help="Source-specific id from the report Feedback target."),
     output_dir: Path = typer.Option(Path("memos"), help="Memo output directory."),
+    force: bool = typer.Option(False, "--force", help="Overwrite an existing memo file."),
 ) -> None:
     memo_date = datetime.now(tz=UTC).date().isoformat()
     store = _store()
@@ -109,7 +110,16 @@ def memo(
         console.print(f"[red]No opportunity found for {source}:{source_id}.[/red]")
         raise typer.Exit(code=1)
 
-    output_path = write_opportunity_memo(row, memo_date=memo_date, output_dir=output_dir)
+    try:
+        output_path = write_opportunity_memo(
+            row,
+            memo_date=memo_date,
+            output_dir=output_dir,
+            force=force,
+        )
+    except FileExistsError as exc:
+        console.print(f"[red]{exc}. Re-run with --force to overwrite.[/red]")
+        raise typer.Exit(code=1) from exc
     console.print(f"[green]Memo written to {output_path}[/green]")
 
 

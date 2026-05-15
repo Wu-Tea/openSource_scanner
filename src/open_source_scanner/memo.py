@@ -17,26 +17,26 @@ def render_opportunity_memo(row: dict[str, Any], memo_date: str) -> str:
     next_actions = _build_next_actions(row, packaging_signals, penalties)
 
     lines = [
-        f"# Opportunity Memo - {title}",
+        f"# 机会备忘录 - {title}",
         "",
-        f"- Generated date: {memo_date}",
-        f"- Feedback target: {source} {source_id}",
+        f"- 生成日期: {memo_date}",
+        f"- 反馈目标: {source} {source_id}",
         "",
-        "## Source URL",
+        "## 来源链接",
         "",
-        str(row.get("url") or "unknown"),
+        str(row.get("url") or "未知"),
         "",
-        "## Score snapshot",
+        "## 评分快照",
         "",
-        f"- Score: {row.get('score', 'unknown')}",
-        f"- Stars: {row.get('stars', 'unknown')}",
-        f"- License: {row.get('license_spdx_id') or 'unknown'}",
-        f"- Feedback: {row.get('feedback_status') or 'new'}",
-        f"- Packaging signals: {_format_list(packaging_signals)}",
-        f"- Reasons: {_format_list(reasons)}",
-        f"- Penalties: {_format_list(penalties)}",
+        f"- 分数: {row.get('score', '未知')}",
+        f"- 星标数: {row.get('stars', '未知')}",
+        f"- 许可证: {row.get('license_spdx_id') or '未知'}",
+        f"- 反馈状态: {row.get('feedback_status') or 'new'}",
+        f"- 包装信号: {_format_list(packaging_signals)}",
+        f"- 判断理由: {_format_list(reasons)}",
+        f"- 扣分项: {_format_list(penalties)}",
         "",
-        "## Packaging hypotheses",
+        "## 包装假设",
         "",
         "下面只是基于公开元数据和扫描信号的保守假设，用来帮助人工讨论，不是结论。",
         "",
@@ -45,17 +45,17 @@ def render_opportunity_memo(row: dict[str, Any], memo_date: str) -> str:
     lines.extend(
         [
             "",
-            "## Validation checklist",
+            "## 验证清单",
             "",
             "- 目标用户是谁？先写出一个具体角色，例如独立开发者、运营团队或某个行业的小团队。",
             "- 痛点是什么？用一句话说明他们现在为什么会花时间或钱解决这个问题。",
             "- 原项目为什么不容易直接使用？检查部署、文档、配置、学习成本和维护负担。",
             "- 付费包装能让什么变简单？明确是托管、部署包、模板、集成、本地化还是支持。",
-            "- 许可证是否允许计划中的商业包装？在继续前做一次人工 license review。",
+            "- 许可证是否允许计划中的商业包装？在继续前做一次许可证人工审核。",
             "- 活跃度和维护情况是否足够？查看最近提交、issue 回复和发布节奏。",
             "- 7 天内能否做出演示？如果不能，先缩小到一个可展示的最小场景。",
             "",
-            "## Next actions",
+            "## 下一步行动",
             "",
         ]
     )
@@ -64,12 +64,20 @@ def render_opportunity_memo(row: dict[str, Any], memo_date: str) -> str:
     return "\n".join(lines)
 
 
-def write_opportunity_memo(row: dict[str, Any], memo_date: str, output_dir: Path) -> Path:
+def write_opportunity_memo(
+    row: dict[str, Any],
+    memo_date: str,
+    output_dir: Path,
+    *,
+    force: bool = False,
+) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     source = _safe_slug(row.get("source") or "unknown")
     source_id = _safe_slug(row.get("source_id") or "unknown")
     title = _safe_slug(row.get("title") or row.get("project") or "opportunity")
     output_path = output_dir / f"{memo_date}-{source}-{source_id}-{title}.md"
+    if output_path.exists() and not force:
+        raise FileExistsError(f"Memo already exists: {output_path}")
     output_path.write_text(render_opportunity_memo(row, memo_date), encoding="utf-8")
     return output_path
 
@@ -128,7 +136,7 @@ def _build_next_actions(
     if penalties:
         actions.append("逐条复查扣分项，决定它们是可修复风险还是停止条件。")
     elif row.get("feedback_status") == "package":
-        actions.append("把该项目列入包装实验候选，并准备一页 demo scope。")
+        actions.append("把该项目列入包装实验候选，并准备一页演示范围说明。")
     return actions[:5]
 
 
@@ -151,7 +159,7 @@ def _contains_any(text: str, needles: tuple[str, ...]) -> bool:
 
 
 def _format_list(values: list[str]) -> str:
-    return ", ".join(values) if values else "none"
+    return ", ".join(values) if values else "无"
 
 
 def _safe_slug(value: Any) -> str:

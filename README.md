@@ -53,6 +53,10 @@ arguments for `feedback` and `memo`. For example, if the report says
 `Feedback target: github 123`, run `uv run oss-scan memo github 123` to create
 an opportunity memo in `memos/`.
 
+The memo command will not overwrite an existing same-day memo by default, so
+manual edits are protected. If you intentionally want to regenerate the file,
+run `uv run oss-scan memo github 123 --force`.
+
 Memos are human review aids. They summarize public project facts and suggest
 conservative packaging hypotheses, but they are not legal advice, business
 guarantees, or proof that a project can be commercialized safely.
