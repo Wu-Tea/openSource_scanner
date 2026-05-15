@@ -7,7 +7,7 @@ import httpx
 from typer.testing import CliRunner
 
 from open_source_scanner import __main__ as cli
-from open_source_scanner.models import RawRepository
+from open_source_scanner.models import Opportunity, RawRepository, ScoreBreakdown
 from open_source_scanner.storage import OpportunityStore
 
 
@@ -86,6 +86,105 @@ def test_report_command_writes_empty_store_report(tmp_path: Path, monkeypatch) -
     report_files = list(output_dir.glob("*.md"))
     assert len(report_files) == 1
     assert "No opportunities found" in report_files[0].read_text(encoding="utf-8")
+
+
+def test_memo_command_writes_existing_opportunity(tmp_path: Path, monkeypatch) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    store = OpportunityStore(db_path)
+    store.initialize()
+    store.upsert_opportunity(
+        Opportunity(
+            source="github",
+            source_id="123",
+            title="demo/agent-kit",
+            url="https://github.com/demo/agent-kit",
+            description="Deployable agent workflow dashboard",
+            project="demo/agent-kit",
+            language="Python",
+            topics=["ai", "agent"],
+            stars=1200,
+            forks=90,
+            open_issues=12,
+            pushed_at=datetime(2026, 5, 10, 12, 30, tzinfo=UTC),
+            archived=False,
+            license_spdx_id="mit",
+            packaging_signals=["deploy", "dashboard"],
+        ),
+        ScoreBreakdown(total=88, reasons=["preferred license: mit"], penalties=[]),
+        seen_at=datetime(2026, 5, 15, 9, 30, tzinfo=UTC),
+    )
+    output_dir = tmp_path / "memos"
+
+    result = runner.invoke(cli.app, ["memo", "github", "123", "--output-dir", str(output_dir)])
+
+    assert result.exit_code == 0, result.output
+    assert "Memo written to" in result.output
+    memo_files = list(output_dir.glob("*.md"))
+    assert len(memo_files) == 1
+    memo_text = memo_files[0].read_text(encoding="utf-8")
+    assert "反馈目标: github 123" in memo_text
+    assert "## 包装假设" in memo_text
+
+
+def test_memo_command_requires_force_to_overwrite_existing_memo(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    store = OpportunityStore(db_path)
+    store.initialize()
+    store.upsert_opportunity(
+        Opportunity(
+            source="github",
+            source_id="123",
+            title="demo/agent-kit",
+            url="https://github.com/demo/agent-kit",
+            description="Deployable agent workflow dashboard",
+            project="demo/agent-kit",
+            language="Python",
+            topics=["ai", "agent"],
+            stars=1200,
+            forks=90,
+            open_issues=12,
+            pushed_at=datetime(2026, 5, 10, 12, 30, tzinfo=UTC),
+            archived=False,
+            license_spdx_id="mit",
+            packaging_signals=["deploy", "dashboard"],
+        ),
+        ScoreBreakdown(total=88, reasons=["preferred license: mit"], penalties=[]),
+        seen_at=datetime(2026, 5, 15, 9, 30, tzinfo=UTC),
+    )
+    output_dir = tmp_path / "memos"
+
+    first = runner.invoke(cli.app, ["memo", "github", "123", "--output-dir", str(output_dir)])
+    assert first.exit_code == 0, first.output
+
+    memo_path = next(output_dir.glob("*.md"))
+    memo_path.write_text("human edits", encoding="utf-8")
+    second = runner.invoke(cli.app, ["memo", "github", "123", "--output-dir", str(output_dir)])
+
+    assert second.exit_code == 1
+    assert "Memo already exists" in second.output
+    assert memo_path.read_text(encoding="utf-8") == "human edits"
+
+    forced = runner.invoke(
+        cli.app,
+        ["memo", "github", "123", "--output-dir", str(output_dir), "--force"],
+    )
+
+    assert forced.exit_code == 0, forced.output
+    assert "Memo written to" in forced.output
+    assert memo_path.read_text(encoding="utf-8").startswith("# 机会备忘录 - demo/agent-kit")
+
+
+def test_memo_command_exits_when_target_does_not_exist(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("OSS_SCANNER_DB", str(tmp_path / "scanner.sqlite"))
+
+    result = runner.invoke(cli.app, ["memo", "github", "missing"])
+
+    assert result.exit_code == 1
+    assert "No opportunity found for github:missing" in result.output
 
 
 def test_scan_exits_when_github_is_disabled(tmp_path: Path, monkeypatch) -> None:

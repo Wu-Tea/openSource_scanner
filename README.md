@@ -11,6 +11,7 @@ support offers.
 3. Score each record with explainable packaging and monetization signals.
 4. Store history and feedback in SQLite.
 5. Generate a Markdown report under `reports/`.
+6. Generate a human review memo under `memos/` for candidates worth packaging.
 
 ## Local setup
 
@@ -44,10 +45,21 @@ database is stored at `data/scanner.sqlite`.
 uv run oss-scan scan --limit 50
 uv run oss-scan report --today
 uv run oss-scan feedback github 123 package
+uv run oss-scan memo github 123
 ```
 
 Use the `Feedback target` shown in a report as the `source` and `source_id`
-arguments for `feedback`.
+arguments for `feedback` and `memo`. For example, if the report says
+`Feedback target: github 123`, run `uv run oss-scan memo github 123` to create
+an opportunity memo in `memos/`.
+
+The memo command will not overwrite an existing same-day memo by default, so
+manual edits are protected. If you intentionally want to regenerate the file,
+run `uv run oss-scan memo github 123 --force`.
+
+Memos are human review aids. They summarize public project facts and suggest
+conservative packaging hypotheses, but they are not legal advice, business
+guarantees, or proof that a project can be commercialized safely.
 
 Feedback statuses:
 
