@@ -20,6 +20,13 @@ def test_search_repositories_uses_github_search_params_and_maps_response() -> No
         assert request.headers["Authorization"] == "Bearer test-token"
         return httpx.Response(
             200,
+            headers={
+                "X-RateLimit-Limit": "30",
+                "X-RateLimit-Remaining": "29",
+                "X-RateLimit-Reset": "1770000000",
+                "X-RateLimit-Used": "1",
+                "X-RateLimit-Resource": "search",
+            },
             json={
                 "items": [
                     {
@@ -62,6 +69,13 @@ def test_search_repositories_uses_github_search_params_and_maps_response() -> No
     assert repos[0].license_spdx_id == "mit"
     assert repos[0].owner_type == "Organization"
     assert repos[0].raw["id"] == 123
+    assert connector.last_rate_limit_state is not None
+    assert connector.last_rate_limit_state.limit == 30
+    assert connector.last_rate_limit_state.remaining == 29
+    assert connector.last_rate_limit_state.reset == 1770000000
+    assert connector.last_rate_limit_state.used == 1
+    assert connector.last_rate_limit_state.resource == "search"
+    assert connector.last_rate_limit_state.retry_after is None
 
 
 def test_search_repositories_allows_limit_100_and_omits_authorization_without_token(
@@ -135,6 +149,11 @@ def test_search_repositories_wraps_rate_limit_errors_with_context() -> None:
         "x-ratelimit-remaining": "0",
         "x-ratelimit-reset": "1770000000",
     }
+    assert connector.last_rate_limit_state is not None
+    assert connector.last_rate_limit_state.limit == 5000
+    assert connector.last_rate_limit_state.remaining == 0
+    assert connector.last_rate_limit_state.reset == 1770000000
+    assert connector.last_rate_limit_state.retry_after == 60
     assert "GitHub repository search failed" in str(error)
     assert "status 403" in str(error)
     assert "topic:ai stars:>10" in str(error)

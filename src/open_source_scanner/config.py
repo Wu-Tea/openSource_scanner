@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from open_source_scanner.models import GitHubSourceConfig, ScannerConfig, ScoringConfig
+from open_source_scanner.models import GitHubSourceConfig, SafetyConfig, ScannerConfig, ScoringConfig
 
 
 def _read_yaml_mapping(path: Path) -> dict[str, Any]:
@@ -20,6 +20,7 @@ def load_scanner_config(config_dir: Path = Path("config")) -> ScannerConfig:
     sources = _read_yaml_mapping(config_dir / "sources.yml")
     scoring = _read_yaml_mapping(config_dir / "scoring.yml")
     github_data = sources.get("github", {})
+    safety_data = sources.get("safety") or {}
     license_policy = scoring.get("license_policy", {})
 
     github = GitHubSourceConfig(
@@ -35,4 +36,18 @@ def load_scanner_config(config_dir: Path = Path("config")) -> ScannerConfig:
         caution_licenses=set(license_policy.get("caution", [])),
         packaging_keywords=list(scoring.get("packaging_keywords", [])),
     )
-    return ScannerConfig(github=github, scoring=scoring_config)
+    safety = SafetyConfig(
+        max_search_requests_per_run=int(safety_data.get("max_search_requests_per_run", 10)),
+        min_seconds_between_requests=float(safety_data.get("min_seconds_between_requests", 2.0)),
+        rate_limit_remaining_floor=int(safety_data.get("rate_limit_remaining_floor", 2)),
+        stop_on_rate_limit=_bool_value(safety_data.get("stop_on_rate_limit", True)),
+    )
+    return ScannerConfig(github=github, scoring=scoring_config, safety=safety)
+
+
+def _bool_value(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "on"}
+    return bool(value)

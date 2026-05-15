@@ -48,6 +48,50 @@ packaging_keywords:
     assert config.scoring.preferred_licenses == {"mit"}
     assert config.scoring.caution_licenses == {"agpl-3.0"}
     assert config.scoring.packaging_keywords == ["hosted"]
+    assert config.safety.max_search_requests_per_run == 10
+    assert config.safety.min_seconds_between_requests == 2.0
+    assert config.safety.rate_limit_remaining_floor == 2
+    assert config.safety.stop_on_rate_limit is True
+
+
+def test_load_scanner_config_reads_explicit_safety_values(tmp_path: Path) -> None:
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    (config_dir / "sources.yml").write_text(
+        """
+github:
+  enabled: true
+  max_results: 8
+  repository_queries:
+    - 'topic:ai stars:>10'
+  target_keywords:
+    - agent
+safety:
+  max_search_requests_per_run: 3
+  min_seconds_between_requests: 0.25
+  rate_limit_remaining_floor: 7
+  stop_on_rate_limit: false
+""",
+        encoding="utf-8",
+    )
+    (config_dir / "scoring.yml").write_text(
+        """
+weights: {}
+penalties: {}
+license_policy:
+  preferred: []
+  caution: []
+packaging_keywords: []
+""",
+        encoding="utf-8",
+    )
+
+    config = load_scanner_config(config_dir)
+
+    assert config.safety.max_search_requests_per_run == 3
+    assert config.safety.min_seconds_between_requests == 0.25
+    assert config.safety.rate_limit_remaining_floor == 7
+    assert config.safety.stop_on_rate_limit is False
 
 
 def test_load_scanner_config_rejects_non_mapping_yaml(tmp_path: Path) -> None:
