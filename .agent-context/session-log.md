@@ -88,3 +88,45 @@
 - Push `main` to origin.
 - Add optional scheduled automation.
 - Run a small real scan and inspect generated report quality without committing secrets or temporary local DB files.
+
+## 2026-05-15 - Scheduled automation added
+
+**Goal:** Add optional ways to run the scanner repeatedly after the CLI MVP.
+
+**What changed:**
+
+- Added `.github/workflows/daily-scan.yml` for a daily scan/report run at `01:00 UTC`, approximately `09:00 Asia/Hong_Kong`, plus manual `workflow_dispatch`.
+- Added `scripts/run-daily-scan.ps1` for local Windows Task Scheduler usage.
+- Updated `README.md` with scheduled-run instructions and output locations.
+
+**User-confirmed items:**
+
+- Continued autonomous development remains authorized from the prior user instruction.
+
+**AI-inferred items:**
+
+- GitHub Actions should commit only generated report files, not local SQLite databases.
+- Local scheduled runs should rely on environment-provided `GITHUB_TOKEN` and should not store secrets in scripts.
+
+**Subagent results:**
+
+- Worker F / Darwin implemented scheduled automation.
+- Tesla completed spec review with no findings.
+- Hegel completed quality review with no findings.
+
+**Verification:**
+
+- Worker F reported `uv run pytest -v` -> 25 passed and `uv run ruff check src tests` -> all checks passed.
+- Coordinator reran `uv run pytest -v` -> 25 passed.
+- Coordinator reran `uv run ruff check src tests` -> all checks passed.
+- Coordinator parsed `scripts/run-daily-scan.ps1` with PowerShell parser -> `POWERSHELL_PARSE_OK`.
+
+**Context files updated:**
+
+- `.agent-context/handoff.md`
+- `.agent-context/session-log.md`
+
+**Follow-up:**
+
+- Push latest `main` to origin.
+- Perform the first real scan/report quality check with safe limits and no committed secrets.
