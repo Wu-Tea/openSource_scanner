@@ -8,6 +8,8 @@ from open_source_scanner.report import render_markdown_report, write_report
 def test_render_markdown_report_lists_ranked_opportunities():
     rows = [
         {
+            "source": "github",
+            "source_id": "123",
             "title": "demo/agent-kit",
             "url": "https://github.com/demo/agent-kit",
             "description": "Deployable agent workflow dashboard",
@@ -26,6 +28,7 @@ def test_render_markdown_report_lists_ranked_opportunities():
     assert "# Open Source Opportunity Report - 2026-05-15" in markdown
     assert "This report ranks open-source projects" in markdown
     assert "demo/agent-kit" in markdown
+    assert "Feedback target: github 123" in markdown
     assert "Score: 88" in markdown
     assert "Packaging signals: deploy, dashboard" in markdown
     assert "Reasons: preferred license: mit" in markdown

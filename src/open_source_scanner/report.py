@@ -26,6 +26,7 @@ def render_markdown_report(rows: list[dict[str, Any]], report_date: str) -> str:
                 f"## {index}. {row['title']}",
                 "",
                 f"- URL: {row['url']}",
+                f"- Feedback target: {row.get('source', 'unknown')} {row.get('source_id', 'unknown')}",
                 f"- Score: {row['score']}",
                 f"- Stars: {row['stars']}",
                 f"- License: {row.get('license_spdx_id') or 'unknown'}",

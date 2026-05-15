@@ -141,9 +141,9 @@ class OpportunityStore:
                 payload,
             )
 
-    def set_feedback(self, source: str, source_id: str, status: FeedbackStatus) -> None:
+    def set_feedback(self, source: str, source_id: str, status: FeedbackStatus) -> bool:
         with self._connect() as conn:
-            conn.execute(
+            cursor = conn.execute(
                 """
                 UPDATE opportunities
                 SET feedback_status = ?
@@ -151,6 +151,7 @@ class OpportunityStore:
                 """,
                 (status, source, source_id),
             )
+            return cursor.rowcount > 0
 
     def list_ranked(self, limit: int) -> list[dict[str, Any]]:
         with self._connect() as conn:
