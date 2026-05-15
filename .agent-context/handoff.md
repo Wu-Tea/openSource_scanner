@@ -18,13 +18,13 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Multi-category opportunity reporting is implemented and pushed in commit `f569eb9`: default GitHub queries now cover developer tools, infra, automation, DevOps, security, monitoring, data, analytics, CLI, and a capped AI query.
 - `oss-scan report` now defaults to balanced category output with `--balanced/--global` and `--per-category`; reports include `Category:` for each opportunity.
 - A scoring edge case is fixed: future-looking GitHub `pushed_at` timestamps are displayed as `pushed 0 days ago`, not negative days.
-- Latest larger safe scan ran with `uv run oss-scan scan --limit 100 --max-search-requests 10 --min-seconds-between-requests 6`; it stored 1000 observations from 10 GitHub search requests.
-- Local SQLite now contains 1074 unique non-dismissed opportunities; category distribution is approximately AI / Agents 417, Infra / DevOps 206, Data / Analytics 176, Developer Tools 110, Security / Privacy 88, Automation / Workflow 43, plus smaller Web/Productivity/Media/Commerce buckets.
+- Latest larger safe scan ran with `uv run oss-scan scan --limit 100 --max-search-requests 13 --min-seconds-between-requests 6`; it stored 1300 observations from 13 GitHub search requests.
+- Local SQLite now contains 1336 unique non-dismissed opportunities; category distribution is approximately AI / Agents 477, Infra / DevOps 217, Data / Analytics 189, Developer Tools 174, Automation / Workflow 96, Security / Privacy 95, Productivity / Knowledge 44, Web / App Frameworks 30, Media / Design 10, Commerce / Growth 4.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Review the diversified `reports/2026-05-15.md`, mark safe high-potential non-AI candidates with `feedback`, then add risk/downranking rules for gray-area automation, bot, anti-detection, and platform-ToS-sensitive projects.
+Review the diversified `reports/2026-05-15.md`, prioritize new non-AI candidates such as `dokku/dokku`, `mswjs/msw`, `gotenberg/gotenberg`, `nocode-js/sequential-workflow-designer`, `standard-webhooks/standard-webhooks`, and then add risk/downranking rules for gray-area automation, bot, anti-detection, and platform-ToS-sensitive projects.
 
 ## Blockers
 

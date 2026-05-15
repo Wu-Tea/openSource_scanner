@@ -152,3 +152,30 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Add risk/downranking rules for gray-area projects such as browser anti-detection, account automation, game idling, free-key lists, and other ToS-sensitive tools.
 - Generate memos for a small non-AI shortlist once the risk filter is in place.
+
+### 2026-05-16 - Full configured query scan
+
+**Goal:** Run another discovery pass after diversifying the query portfolio, including the previously unscanned no-code, productivity, and API queries.
+
+**What ran:**
+
+- Baseline before scan: 1074 unique opportunities in `data/scanner.sqlite`.
+- Command: `uv run oss-scan scan --limit 100 --max-search-requests 13 --min-seconds-between-requests 6`.
+- Result: 1300 observations from 13 GitHub search requests.
+- Regenerated report: `uv run oss-scan report --today --limit 120 --per-category 6`.
+
+**Observed data after scan:**
+
+- Local SQLite contains 1336 unique non-dismissed opportunities, a net increase of 262.
+- Category counts: AI / Agents 477, Infra / DevOps 217, Data / Analytics 189, Developer Tools 174, Automation / Workflow 96, Security / Privacy 95, Productivity / Knowledge 44, Web / App Frameworks 30, Media / Design 10, Commerce / Growth 4.
+- Newly surfaced or newly prominent non-AI candidates include `dokku/dokku`, `mswjs/msw`, `gotenberg/gotenberg`, `Volmarg/personal-management-system`, `nocode-js/sequential-workflow-designer`, `standard-webhooks/standard-webhooks`, `git-town/git-town`, `muety/wakapi`, and `super-productivity/super-productivity`.
+
+**Manual spot checks:**
+
+- Official GitHub pages were opened for `dokku/dokku`, `mswjs/msw`, `gotenberg/gotenberg`, `Volmarg/personal-management-system`, `nocode-js/sequential-workflow-designer`, and `standard-webhooks/standard-webhooks`.
+- The checks confirmed the broadening effect: the candidate set now includes PaaS, API mocking, document conversion API, no-code workflow UI, webhook standards/tooling, and personal management software.
+
+**Follow-up:**
+
+- Add risk/downranking rules before marking candidates, because high scores still include some platform-ToS-sensitive automation and anti-detection projects.
+- Generate memos for the top safe non-AI candidates after risk filtering.
