@@ -15,12 +15,16 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Opportunity memo workflow is implemented and verified: `oss-scan memo SOURCE SOURCE_ID` writes Chinese review memos under `memos/` and protects existing files unless `--force` is used.
 - Shortlist pipeline is implemented and verified: `oss-scan shortlist` groups `package`, `watch`, and `saved` opportunities into a Markdown pipeline view.
 - GitHub scan safety controls are implemented: per-run request budget, request spacing, rate-limit state capture, rate-limit floor stop, and fail-closed safety config validation.
-- A larger safe scan ran with `--limit 100 --max-search-requests 10`; it used 5 GitHub search requests, stored 500 observations, and produced 472 unique opportunities in the local SQLite DB.
+- Multi-category opportunity reporting is implemented and pushed in commit `f569eb9`: default GitHub queries now cover developer tools, infra, automation, DevOps, security, monitoring, data, analytics, CLI, and a capped AI query.
+- `oss-scan report` now defaults to balanced category output with `--balanced/--global` and `--per-category`; reports include `Category:` for each opportunity.
+- A scoring edge case is fixed: future-looking GitHub `pushed_at` timestamps are displayed as `pushed 0 days ago`, not negative days.
+- Latest larger safe scan ran with `uv run oss-scan scan --limit 100 --max-search-requests 10 --min-seconds-between-requests 6`; it stored 1000 observations from 10 GitHub search requests.
+- Local SQLite now contains 1074 unique non-dismissed opportunities; category distribution is approximately AI / Agents 417, Infra / DevOps 206, Data / Analytics 176, Developer Tools 110, Security / Privacy 88, Automation / Workflow 43, plus smaller Web/Productivity/Media/Commerce buckets.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Review `reports/2026-05-15.md`, mark promising entries with `feedback`, then generate memos/shortlist for the strongest candidates.
+Review the diversified `reports/2026-05-15.md`, mark safe high-potential non-AI candidates with `feedback`, then add risk/downranking rules for gray-area automation, bot, anti-detection, and platform-ToS-sensitive projects.
 
 ## Blockers
 
@@ -33,6 +37,7 @@ Review `reports/2026-05-15.md`, mark promising entries with `feedback`, then gen
 ## Relevant Decisions
 
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
+- `.agent-context/decisions/DEC-2026-05-16-001-balanced-category-reports.md`
 
 ## Files To Read First
 

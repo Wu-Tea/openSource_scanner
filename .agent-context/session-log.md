@@ -114,3 +114,41 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Review the generated report and mark the best candidates as `package`, `watch`, or `saved`.
 - Consider adding issue/discussion/release-detail enrichment only for top-ranked or feedback-marked candidates.
+
+### 2026-05-16 - Diversified category reporting
+
+**Goal:** Respond to user feedback that the scan results were almost entirely AI-related.
+
+**What changed:**
+
+- Replaced the AI-heavy GitHub query set with a broader portfolio across developer tools, self-hosted infrastructure, automation, DevOps, security, monitoring, data engineering, analytics, CLI, and a capped AI query.
+- Added `src/open_source_scanner/taxonomy.py` for lightweight category classification without changing the SQLite schema.
+- Changed `oss-scan report` to default to balanced category output, with `--global` for pure score ranking and `--per-category` to tune the first-pass category cap.
+- Added `Category:` to Markdown report rows.
+- Fixed score reason text for future-looking GitHub `pushed_at` values by clamping age days to zero.
+- Updated README with diversified query and balanced-report usage.
+
+**Verification:**
+
+- TDD red check: new taxonomy/report tests initially failed because `open_source_scanner.taxonomy` did not exist.
+- `uv run pytest -q` -> 58 passed.
+- `uv run ruff check src tests` -> all checks passed.
+- `uv run oss-scan report --help` shows `--balanced/--global` and `--per-category`.
+- Real scan: `uv run oss-scan scan --limit 100 --max-search-requests 10 --min-seconds-between-requests 6` -> 1000 observations from 10 GitHub search requests.
+- Recomputed existing SQLite scores after the negative-day fix and regenerated `reports/2026-05-15.md`.
+- Verified no `pushed -` text remains in the regenerated report.
+
+**Observed data after scan:**
+
+- Local SQLite contains 1074 unique non-dismissed opportunities.
+- Category counts: AI / Agents 417, Infra / DevOps 206, Data / Analytics 176, Developer Tools 110, Security / Privacy 88, Automation / Workflow 43, Web / App Frameworks 18, Productivity / Knowledge 7, Media / Design 5, Commerce / Growth 4.
+- Stronger non-AI candidates surfaced include `theonedev/onedev`, `infracost/infracost`, `floci-io/floci`, `openebs/openebs`, `certimate-go/certimate`, `autobase-tech/autobase`, `schemathesis/schemathesis`, `Netflix/maestro`, `apache/incubator-devlake`, `owasp-noir/noir`, `Samsung/CredSweeper`, and `openmeterio/openmeter`.
+
+**Commit:**
+
+- `f569eb9 feat: diversify opportunity reports` pushed to `origin/main`.
+
+**Follow-up:**
+
+- Add risk/downranking rules for gray-area projects such as browser anti-detection, account automation, game idling, free-key lists, and other ToS-sensitive tools.
+- Generate memos for a small non-AI shortlist once the risk filter is in place.
