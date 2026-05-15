@@ -12,11 +12,12 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Scheduled automation is implemented: GitHub Actions daily scan/report workflow and local Windows helper script.
 - Final local verification passed: `uv run pytest -v` -> 25 passed; `uv run ruff check src tests` -> all checks passed; PowerShell parser check for `scripts/run-daily-scan.ps1` passed.
 - First small real scan/report verification succeeded with `--limit 1`; generated data was inspected and then removed.
+- Opportunity memo workflow is implemented and verified: `oss-scan memo SOURCE SOURCE_ID` writes Chinese review memos under `memos/` and protects existing files unless `--force` is used.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Build the next workflow step: generate an opportunity memo from a saved/scanned project so candidates can turn into packaging experiments.
+Build the next workflow step: track shortlist decisions and package-stage experiments across reports and memos.
 
 ## Blockers
 

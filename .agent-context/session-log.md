@@ -169,3 +169,50 @@
 **Follow-up:**
 
 - Implement an opportunity memo workflow.
+
+## 2026-05-15 - Opportunity memo workflow added
+
+**Goal:** Turn a scanned opportunity into a structured packaging experiment memo.
+
+**What changed:**
+
+- Added `OpportunityStore.get_opportunity(source, source_id)`.
+- Added `src/open_source_scanner/memo.py` for rendering and writing Chinese opportunity memos.
+- Added `oss-scan memo SOURCE SOURCE_ID --output-dir memos [--force]`.
+- Added overwrite protection so regenerated memos do not silently destroy human edits.
+- Added `memos/.gitkeep` and README instructions.
+
+**User-confirmed items:**
+
+- Continued autonomous development remains authorized from the prior user instruction.
+
+**AI-inferred items:**
+
+- Memo files are likely to become human-edited working documents, so overwrite protection is important.
+- The next useful layer is tracking shortlist and package-stage experiments over time.
+
+**Subagent results:**
+
+- Worker G / Hypatia implemented memo rendering, storage lookup, CLI command, README docs, and tests.
+- Jason's spec review required Chinese structural text in the memo.
+- Gauss's quality review required overwrite protection.
+- Hypatia fixed both issues.
+- Galileo re-reviewed the fix and approved it.
+
+**Verification:**
+
+- Worker G reported `uv run pytest -v` -> 33 passed, `uv run ruff check src tests` -> all checks passed, and `uv run oss-scan memo --help` showed `--force`.
+- Coordinator reran `uv run pytest -v` -> 33 passed.
+- Coordinator reran `uv run ruff check src tests` -> all checks passed.
+- Coordinator verified `uv run oss-scan --help` and `uv run oss-scan memo --help`.
+- Coordinator performed a small real scan/report/memo verification, inspected the generated memo path, then removed temporary DB/report/memo files.
+
+**Context files updated:**
+
+- `.agent-context/handoff.md`
+- `.agent-context/session-log.md`
+
+**Follow-up:**
+
+- Push latest `main` to origin.
+- Add a shortlist/experiment tracking layer so `package` feedback can become a visible pipeline.
