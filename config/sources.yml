@@ -1,6 +1,6 @@
 github:
   enabled: true
-  max_results: 50
+  max_results: 100
   repository_queries:
     - "topic:ai stars:>100 pushed:>2026-01-01"
     - "topic:automation stars:>50 pushed:>2026-01-01"
@@ -17,3 +17,8 @@ github:
     - workflow
     - scraper
     - dashboard
+safety:
+  max_search_requests_per_run: 10
+  min_seconds_between_requests: 2.0
+  rate_limit_remaining_floor: 2
+  stop_on_rate_limit: true

@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from datetime import UTC, datetime
 from pathlib import Path
+from time import sleep
 from typing import cast
 
 import httpx
@@ -45,6 +46,16 @@ def scan(
         help="Directory containing sources.yml and scoring.yml.",
     ),
     limit: int = typer.Option(50, min=1, help="Maximum repositories per query."),
+    max_search_requests: int | None = typer.Option(
+        None,
+        min=1,
+        help="Override the configured search request budget for this run.",
+    ),
+    min_seconds_between_requests: float | None = typer.Option(
+        None,
+        min=0.0,
+        help="Override the configured delay between GitHub search requests.",
+    ),
 ) -> None:
     config = load_scanner_config(config_dir)
     store = _store()
@@ -55,17 +66,49 @@ def scan(
 
     now = datetime.now(tz=UTC)
     search_limit = min(limit, config.github.max_results, 100)
+    request_budget = (
+        max_search_requests
+        if max_search_requests is not None
+        else config.safety.max_search_requests_per_run
+    )
+    request_spacing = (
+        min_seconds_between_requests
+        if min_seconds_between_requests is not None
+        else config.safety.min_seconds_between_requests
+    )
     connector = GitHubConnector()
     count = 0
+    search_requests = 0
+    stopped_reason: str | None = None
 
     try:
         for query in config.github.repository_queries:
+            if search_requests >= request_budget:
+                stopped_reason = (
+                    f"request budget reached ({search_requests}/{request_budget} search requests)"
+                )
+                break
+            if search_requests > 0 and request_spacing > 0:
+                sleep(request_spacing)
             repositories = connector.search_repositories(query, limit=search_limit)
+            search_requests += 1
             for repository in repositories:
                 opportunity = normalize_repository(repository, config.scoring.packaging_keywords)
                 score = score_opportunity(opportunity, config.scoring, now=now)
                 store.upsert_opportunity(opportunity, score, seen_at=now)
                 count += 1
+            rate_limit_state = getattr(connector, "last_rate_limit_state", None)
+            remaining = getattr(rate_limit_state, "remaining", None)
+            if (
+                config.safety.stop_on_rate_limit
+                and remaining is not None
+                and remaining <= config.safety.rate_limit_remaining_floor
+            ):
+                stopped_reason = (
+                    "rate limit remaining floor reached "
+                    f"(remaining={remaining}, floor={config.safety.rate_limit_remaining_floor})"
+                )
+                break
     except GitHubConnectorError as exc:
         console.print(f"[red]GitHub scan failed: {exc}[/red]")
         raise typer.Exit(code=1) from exc
@@ -81,7 +124,12 @@ def scan(
     finally:
         connector.close()
 
-    console.print(f"[green]Scanned and stored {count} opportunity observations.[/green]")
+    if stopped_reason:
+        console.print(f"[yellow]Stopped early: {stopped_reason}.[/yellow]")
+    console.print(
+        "[green]Scanned and stored "
+        f"{count} opportunity observations from {search_requests} GitHub search requests.[/green]"
+    )
 
 
 @app.command()

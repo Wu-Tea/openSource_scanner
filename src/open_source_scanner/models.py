@@ -26,9 +26,18 @@ class ScoringConfig:
 
 
 @dataclass(frozen=True)
+class SafetyConfig:
+    max_search_requests_per_run: int = 10
+    min_seconds_between_requests: float = 2.0
+    rate_limit_remaining_floor: int = 2
+    stop_on_rate_limit: bool = True
+
+
+@dataclass(frozen=True)
 class ScannerConfig:
     github: GitHubSourceConfig
     scoring: ScoringConfig
+    safety: SafetyConfig
 
 
 @dataclass(frozen=True)

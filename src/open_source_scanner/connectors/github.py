@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Mapping
 
 import httpx
 
@@ -18,6 +19,16 @@ RATE_LIMIT_HEADER_NAMES = {
     "x-ratelimit-resource",
     "x-ratelimit-used",
 }
+
+
+@dataclass(frozen=True)
+class GitHubRateLimitState:
+    limit: int | None = None
+    remaining: int | None = None
+    reset: int | None = None
+    used: int | None = None
+    resource: str | None = None
+    retry_after: int | None = None
 
 
 class GitHubConnectorError(Exception):
@@ -66,6 +77,7 @@ class GitHubConnector:
         if resolved_token:
             self._headers["Authorization"] = f"Bearer {resolved_token}"
         self._client = client or httpx.Client(base_url=base_url, timeout=30.0)
+        self.last_rate_limit_state: GitHubRateLimitState | None = None
 
     def close(self) -> None:
         if self._owns_client:
@@ -85,6 +97,7 @@ class GitHubConnector:
             },
             headers=self._headers,
         )
+        self.last_rate_limit_state = _rate_limit_state(response)
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
@@ -156,6 +169,28 @@ def _rate_limit_headers(response: httpx.Response) -> dict[str, str]:
         for key, value in response.headers.items()
         if key.lower() in RATE_LIMIT_HEADER_NAMES
     }
+
+
+def _rate_limit_state(response: httpx.Response) -> GitHubRateLimitState:
+    headers = _rate_limit_headers(response)
+    return GitHubRateLimitState(
+        limit=_optional_int_header(headers, "x-ratelimit-limit"),
+        remaining=_optional_int_header(headers, "x-ratelimit-remaining"),
+        reset=_optional_int_header(headers, "x-ratelimit-reset"),
+        used=_optional_int_header(headers, "x-ratelimit-used"),
+        resource=headers.get("x-ratelimit-resource"),
+        retry_after=_optional_int_header(headers, "retry-after"),
+    )
+
+
+def _optional_int_header(headers: Mapping[str, str], name: str) -> int | None:
+    value = headers.get(name)
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        return None
 
 
 def _format_rate_limit_context(rate_limit_headers: dict[str, str]) -> str:

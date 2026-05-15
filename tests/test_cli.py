@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 from typer.testing import CliRunner
@@ -14,17 +15,37 @@ from open_source_scanner.storage import OpportunityStore
 runner = CliRunner()
 
 
-def _write_config(config_dir: Path, *, github_enabled: bool = True, max_results: int = 50) -> None:
+def _write_config(
+    config_dir: Path,
+    *,
+    github_enabled: bool = True,
+    max_results: int = 50,
+    repository_queries: list[str] | None = None,
+    safety: dict[str, object] | None = None,
+) -> None:
     config_dir.mkdir()
+    queries = repository_queries or ["topic:ai stars:>10"]
+    queries_yaml = "\n".join(f"    - '{query}'" for query in queries)
+    safety_yaml = ""
+    if safety is not None:
+        stop_on_rate_limit = str(safety["stop_on_rate_limit"]).lower()
+        safety_yaml = f"""
+safety:
+  max_search_requests_per_run: {safety["max_search_requests_per_run"]}
+  min_seconds_between_requests: {safety["min_seconds_between_requests"]}
+  rate_limit_remaining_floor: {safety["rate_limit_remaining_floor"]}
+  stop_on_rate_limit: {stop_on_rate_limit}
+"""
     (config_dir / "sources.yml").write_text(
         f"""
 github:
   enabled: {str(github_enabled).lower()}
   max_results: {max_results}
   repository_queries:
-    - 'topic:ai stars:>10'
+{queries_yaml}
   target_keywords:
     - agent
+{safety_yaml}
 """,
         encoding="utf-8",
     )
@@ -53,6 +74,25 @@ packaging_keywords:
   - dashboard
 """,
         encoding="utf-8",
+    )
+
+
+def _raw_repository(source_id: str = "123") -> RawRepository:
+    return RawRepository(
+        source="github",
+        source_id=source_id,
+        full_name=f"demo/agent-kit-{source_id}",
+        html_url=f"https://github.com/demo/agent-kit-{source_id}",
+        description="Deployable agent workflow dashboard",
+        language="Python",
+        topics=["ai", "agent", "workflow"],
+        stars=1200,
+        forks=90,
+        open_issues=12,
+        pushed_at=datetime(2026, 5, 10, 12, 30, tzinfo=UTC),
+        archived=False,
+        license_spdx_id="mit",
+        owner_type="Organization",
     )
 
 
@@ -372,6 +412,173 @@ def test_scan_normalizes_scores_and_stores_fake_github_results(
     assert rows[0]["source_id"] == "123"
     assert rows[0]["title"] == "demo/agent-kit"
     assert rows[0]["score"] > 0
+
+
+def test_scan_stops_before_exceeding_max_search_request_override(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    config_dir = tmp_path / "config"
+    queries = ["topic:one", "topic:two", "topic:three"]
+    _write_config(
+        config_dir,
+        repository_queries=queries,
+        safety={
+            "max_search_requests_per_run": 10,
+            "min_seconds_between_requests": 0,
+            "rate_limit_remaining_floor": 0,
+            "stop_on_rate_limit": False,
+        },
+    )
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    monkeypatch.setattr(cli, "sleep", lambda seconds: None, raising=False)
+
+    class FakeGitHubConnector:
+        instances: list[FakeGitHubConnector] = []
+
+        def __init__(self) -> None:
+            self.calls: list[str] = []
+            self.last_rate_limit_state = SimpleNamespace(remaining=50)
+            self.instances.append(self)
+
+        def search_repositories(self, query: str, limit: int) -> list[RawRepository]:
+            self.calls.append(query)
+            return []
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(cli, "GitHubConnector", FakeGitHubConnector)
+
+    result = runner.invoke(
+        cli.app,
+        [
+            "scan",
+            "--config-dir",
+            str(config_dir),
+            "--limit",
+            "5",
+            "--max-search-requests",
+            "2",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert FakeGitHubConnector.instances[0].calls == queries[:2]
+    assert "Stopped early" in result.output
+    assert "request budget" in result.output
+    assert "Scanned and stored 0 opportunity observations" in result.output
+
+
+def test_scan_stops_after_response_when_rate_limit_floor_is_reached(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    config_dir = tmp_path / "config"
+    queries = ["topic:one", "topic:two", "topic:three"]
+    _write_config(
+        config_dir,
+        repository_queries=queries,
+        safety={
+            "max_search_requests_per_run": 10,
+            "min_seconds_between_requests": 0,
+            "rate_limit_remaining_floor": 2,
+            "stop_on_rate_limit": True,
+        },
+    )
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    monkeypatch.setattr(cli, "sleep", lambda seconds: None, raising=False)
+
+    class FakeGitHubConnector:
+        instances: list[FakeGitHubConnector] = []
+
+        def __init__(self) -> None:
+            self.calls: list[str] = []
+            self.last_rate_limit_state = None
+            self.instances.append(self)
+
+        def search_repositories(self, query: str, limit: int) -> list[RawRepository]:
+            self.calls.append(query)
+            self.last_rate_limit_state = SimpleNamespace(
+                limit=30,
+                remaining=1,
+                reset=1770000000,
+                used=29,
+                resource="search",
+                retry_after=None,
+            )
+            return [_raw_repository()]
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(cli, "GitHubConnector", FakeGitHubConnector)
+
+    result = runner.invoke(cli.app, ["scan", "--config-dir", str(config_dir), "--limit", "5"])
+
+    assert result.exit_code == 0, result.output
+    assert FakeGitHubConnector.instances[0].calls == queries[:1]
+    assert "Stopped early" in result.output
+    assert "rate limit" in result.output
+    assert "remaining=1" in result.output
+    assert "Scanned and stored 1 opportunity observation" in result.output
+    rows = OpportunityStore(db_path).list_ranked(limit=10)
+    assert [row["source_id"] for row in rows] == ["123"]
+
+
+def test_scan_sleeps_between_search_requests_but_not_before_first(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    config_dir = tmp_path / "config"
+    queries = ["topic:one", "topic:two", "topic:three"]
+    _write_config(
+        config_dir,
+        repository_queries=queries,
+        safety={
+            "max_search_requests_per_run": 10,
+            "min_seconds_between_requests": 99,
+            "rate_limit_remaining_floor": 0,
+            "stop_on_rate_limit": False,
+        },
+    )
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    sleep_calls: list[float] = []
+    monkeypatch.setattr(cli, "sleep", sleep_calls.append, raising=False)
+
+    class FakeGitHubConnector:
+        instances: list[FakeGitHubConnector] = []
+
+        def __init__(self) -> None:
+            self.calls: list[str] = []
+            self.last_rate_limit_state = SimpleNamespace(remaining=50)
+            self.instances.append(self)
+
+        def search_repositories(self, query: str, limit: int) -> list[RawRepository]:
+            self.calls.append(query)
+            return []
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(cli, "GitHubConnector", FakeGitHubConnector)
+
+    result = runner.invoke(
+        cli.app,
+        [
+            "scan",
+            "--config-dir",
+            str(config_dir),
+            "--limit",
+            "5",
+            "--min-seconds-between-requests",
+            "0.25",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert FakeGitHubConnector.instances[0].calls == queries
+    assert sleep_calls == [0.25, 0.25]
 
 
 def test_scan_handles_network_errors_without_leaking_request_url(

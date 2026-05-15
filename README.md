@@ -25,6 +25,22 @@ uv run oss-scan report --today
 `GITHUB_TOKEN` is optional for small manual runs, but recommended to avoid low
 unauthenticated API rate limits.
 
+## Safety
+
+The GitHub scan uses conservative request guards before larger runs. By default,
+one scan run makes at most 10 GitHub repository search requests, waits 2 seconds
+between search requests, and stops early when the reported remaining search
+quota reaches 2. You can override the first two values for one run:
+
+```powershell
+uv run oss-scan scan --max-search-requests 5 --min-seconds-between-requests 1
+```
+
+The scanner does not retry GitHub rate-limit failures in a loop. If GitHub
+returns an error, the command exits with failure and prints rate-limit context
+when available. Put `GITHUB_TOKEN` in your shell, task, or GitHub Actions secret
+environment; do not write token values into committed files.
+
 ## Scheduled runs
 
 GitHub Actions runs the optional daily scan around 09:00 Asia/Hong_Kong
