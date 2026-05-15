@@ -8,12 +8,13 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 
 - Repository `https://github.com/Wu-Tea/openSource_scanner.git` has been cloned into `E:\AI\resp_scanner`.
 - Implementation plan is saved at `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`.
+- GitHub-only MVP is implemented on `main`: config, GitHub connector, normalizer, scoring, SQLite storage, Markdown reports, Typer CLI, README, and workflow docs.
+- Final local verification for the MVP passed: `uv run pytest -v` -> 25 passed; `uv run ruff check src tests` -> all checks passed; `uv run oss-scan --help` showed `scan`, `report`, and `feedback`.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
-- AI-inferred: first milestone should complete the GitHub-only MVP before adding more community sources.
 
 ## Next Action
 
-Create isolated worktrees and dispatch subagents for independent MVP tasks, then verify and merge accepted work back into `main`.
+Push the MVP commits, then continue with optional scheduled automation and the first real scan/report verification.
 
 ## Blockers
 
