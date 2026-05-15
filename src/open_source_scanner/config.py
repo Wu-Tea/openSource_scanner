@@ -37,17 +37,56 @@ def load_scanner_config(config_dir: Path = Path("config")) -> ScannerConfig:
         packaging_keywords=list(scoring.get("packaging_keywords", [])),
     )
     safety = SafetyConfig(
-        max_search_requests_per_run=int(safety_data.get("max_search_requests_per_run", 10)),
-        min_seconds_between_requests=float(safety_data.get("min_seconds_between_requests", 2.0)),
-        rate_limit_remaining_floor=int(safety_data.get("rate_limit_remaining_floor", 2)),
-        stop_on_rate_limit=_bool_value(safety_data.get("stop_on_rate_limit", True)),
+        max_search_requests_per_run=_int_at_least(
+            safety_data.get("max_search_requests_per_run", 10),
+            field="safety.max_search_requests_per_run",
+            minimum=1,
+        ),
+        min_seconds_between_requests=_float_at_least(
+            safety_data.get("min_seconds_between_requests", 2.0),
+            field="safety.min_seconds_between_requests",
+            minimum=0.0,
+        ),
+        rate_limit_remaining_floor=_int_at_least(
+            safety_data.get("rate_limit_remaining_floor", 2),
+            field="safety.rate_limit_remaining_floor",
+            minimum=0,
+        ),
+        stop_on_rate_limit=_bool_value(
+            safety_data.get("stop_on_rate_limit", True),
+            field="safety.stop_on_rate_limit",
+        ),
     )
     return ScannerConfig(github=github, scoring=scoring_config, safety=safety)
 
 
-def _bool_value(value: Any) -> bool:
+def _int_at_least(value: Any, *, field: str, minimum: int) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{field} must be an integer >= {minimum}") from exc
+    if parsed < minimum:
+        raise ValueError(f"{field} must be >= {minimum}")
+    return parsed
+
+
+def _float_at_least(value: Any, *, field: str, minimum: float) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{field} must be a number >= {minimum:g}") from exc
+    if parsed < minimum:
+        raise ValueError(f"{field} must be >= {minimum:g}")
+    return parsed
+
+
+def _bool_value(value: Any, *, field: str) -> bool:
     if isinstance(value, bool):
         return value
     if isinstance(value, str):
-        return value.strip().lower() in {"1", "true", "yes", "on"}
-    return bool(value)
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes", "on"}:
+            return True
+        if normalized in {"0", "false", "no", "off"}:
+            return False
+    raise ValueError(f"{field} must be a boolean or one of true/false/yes/no/on/off/1/0")
