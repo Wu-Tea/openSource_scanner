@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from open_source_scanner.taxonomy import classify_row
+
 
 def render_markdown_report(rows: list[dict[str, Any]], report_date: str) -> str:
     lines = [
@@ -21,6 +23,7 @@ def render_markdown_report(rows: list[dict[str, Any]], report_date: str) -> str:
         packaging_signals = _decode_json_list(row.get("packaging_signals_json"))
         reasons = _decode_json_list(row.get("reasons_json"))
         penalties = _decode_json_list(row.get("penalties_json"))
+        category = row.get("category") or classify_row(row)
         lines.extend(
             [
                 f"## {index}. {row['title']}",
@@ -28,6 +31,7 @@ def render_markdown_report(rows: list[dict[str, Any]], report_date: str) -> str:
                 f"- URL: {row['url']}",
                 f"- Feedback target: {row.get('source', 'unknown')} {row.get('source_id', 'unknown')}",
                 f"- Score: {row['score']}",
+                f"- Category: {category}",
                 f"- Stars: {row['stars']}",
                 f"- License: {row.get('license_spdx_id') or 'unknown'}",
                 f"- Feedback: {row.get('feedback_status', 'new')}",

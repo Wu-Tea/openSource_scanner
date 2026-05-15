@@ -19,6 +19,7 @@ from open_source_scanner.report import write_report
 from open_source_scanner.scoring import score_opportunity
 from open_source_scanner.shortlist import write_shortlist
 from open_source_scanner.storage import OpportunityStore
+from open_source_scanner.taxonomy import balance_rows_by_category
 
 
 app = typer.Typer(help="Scan open-source projects for packaging opportunities.")
@@ -136,11 +137,24 @@ def scan(
 def report(
     today: bool = typer.Option(False, help="Use the current UTC date for the report filename."),
     limit: int = typer.Option(20, min=1, help="Number of ranked opportunities to include."),
+    balanced: bool = typer.Option(
+        True,
+        "--balanced/--global",
+        help="Balance report rows across opportunity categories before filling by global rank.",
+    ),
+    per_category: int = typer.Option(
+        3,
+        min=1,
+        help="Maximum rows per category during the first balanced report pass.",
+    ),
     output_dir: Path = typer.Option(Path("reports"), help="Report output directory."),
 ) -> None:
     report_date = datetime.now(tz=UTC).date().isoformat()
     store = _store()
-    rows = store.list_ranked(limit=limit)
+    candidate_limit = max(limit, 500) if balanced else limit
+    rows = store.list_ranked(limit=candidate_limit)
+    if balanced:
+        rows = balance_rows_by_category(rows, limit=limit, per_category=per_category)
     output_path = write_report(rows, report_date=report_date, output_dir=output_dir)
     console.print(f"[green]Report written to {output_path}[/green]")
 

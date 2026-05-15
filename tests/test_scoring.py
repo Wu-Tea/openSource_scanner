@@ -107,3 +107,13 @@ def test_score_is_clamped_at_zero_for_heavily_penalized_repositories() -> None:
 
     assert score.total == 0
     assert any("unknown license" in penalty for penalty in score.penalties)
+
+
+def test_future_push_timestamp_is_reported_as_current_activity() -> None:
+    now = datetime(2026, 5, 15, tzinfo=UTC)
+    opportunity = _opportunity(pushed_at=now + timedelta(hours=12))
+
+    score = score_opportunity(opportunity, _config(), now=now)
+
+    assert any("pushed 0 days ago" in reason for reason in score.reasons)
+    assert not any("pushed -" in reason for reason in score.reasons)

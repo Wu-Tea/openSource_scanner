@@ -25,6 +25,22 @@ uv run oss-scan report --today
 `GITHUB_TOKEN` is optional for small manual runs, but recommended to avoid low
 unauthenticated API rate limits.
 
+The default GitHub query set is intentionally diversified across developer
+tools, self-hosted infrastructure, automation, DevOps, security, monitoring,
+data, analytics, no-code, productivity, APIs, CLIs, and a capped AI query. This
+keeps the radar from turning into only an AI-project leaderboard.
+
+Reports are balanced by category by default. The report command first picks a
+small number of top projects from each detected category, then fills any
+remaining slots by global score. Use `--global` when you want a pure score-only
+ranking, or tune the first pass with `--per-category`.
+
+```powershell
+uv run oss-scan report --today --limit 30
+uv run oss-scan report --today --limit 30 --per-category 2
+uv run oss-scan report --today --limit 30 --global
+```
+
 ## Safety
 
 The GitHub scan uses conservative request guards before larger runs. By default,

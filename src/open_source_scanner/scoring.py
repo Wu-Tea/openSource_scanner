@@ -25,7 +25,7 @@ def score_opportunity(
         total += partial
         reasons.append(f"moderately popular repository: {opportunity.stars} stars (+{partial})")
 
-    age_days = (current_time - opportunity.pushed_at).days
+    age_days = max((current_time - opportunity.pushed_at).days, 0)
     if age_days <= 30:
         weight = config.weights.get("recent_activity", 0)
         total += weight

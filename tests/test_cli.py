@@ -128,6 +128,67 @@ def test_report_command_writes_empty_store_report(tmp_path: Path, monkeypatch) -
     assert "No opportunities found" in report_files[0].read_text(encoding="utf-8")
 
 
+def test_report_command_defaults_to_balanced_category_output(tmp_path: Path, monkeypatch) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    store = OpportunityStore(db_path)
+    store.initialize()
+    seen_at = datetime(2026, 5, 15, 9, 30, tzinfo=UTC)
+    rows = [
+        ("ai-1", "demo/agent-one", "Agent workflow platform", ["ai", "agent"], 100),
+        ("ai-2", "demo/agent-two", "LLM automation dashboard", ["llm", "agent"], 99),
+        (
+            "infra-1",
+            "demo/kube-deploy",
+            "Self-hosted Kubernetes deployment dashboard",
+            ["kubernetes", "docker"],
+            70,
+        ),
+    ]
+    for source_id, title, description, topics, score in rows:
+        store.upsert_opportunity(
+            Opportunity(
+                source="github",
+                source_id=source_id,
+                title=title,
+                url=f"https://github.com/{title}",
+                description=description,
+                project=title,
+                language="Python",
+                topics=topics,
+                stars=1000,
+                forks=90,
+                open_issues=12,
+                pushed_at=datetime(2026, 5, 10, 12, 30, tzinfo=UTC),
+                archived=False,
+                license_spdx_id="mit",
+                packaging_signals=["deploy", "dashboard"],
+            ),
+            ScoreBreakdown(total=score, reasons=["test score"], penalties=[]),
+            seen_at=seen_at,
+        )
+    output_dir = tmp_path / "reports"
+
+    result = runner.invoke(
+        cli.app,
+        [
+            "report",
+            "--today",
+            "--limit",
+            "3",
+            "--per-category",
+            "1",
+            "--output-dir",
+            str(output_dir),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    report_text = next(output_dir.glob("*.md")).read_text(encoding="utf-8")
+    assert report_text.index("demo/agent-one") < report_text.index("demo/kube-deploy")
+    assert report_text.index("demo/kube-deploy") < report_text.index("demo/agent-two")
+
+
 def test_shortlist_command_writes_feedback_pipeline_report(tmp_path: Path, monkeypatch) -> None:
     db_path = tmp_path / "scanner.sqlite"
     monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))

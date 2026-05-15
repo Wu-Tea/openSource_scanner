@@ -2,21 +2,34 @@ github:
   enabled: true
   max_results: 100
   repository_queries:
-    - "topic:ai stars:>100 pushed:>2026-01-01"
-    - "topic:automation stars:>50 pushed:>2026-01-01"
-    - "topic:rag stars:>50 pushed:>2026-01-01"
-    - "topic:mcp stars:>20 pushed:>2026-01-01"
+    - "topic:developer-tools stars:>100 pushed:>2026-01-01"
     - "topic:self-hosted stars:>100 pushed:>2026-01-01"
+    - "topic:automation stars:>100 pushed:>2026-01-01"
+    - "topic:devops stars:>100 pushed:>2026-01-01"
+    - "topic:security stars:>100 pushed:>2026-01-01"
+    - "topic:monitoring stars:>100 pushed:>2026-01-01"
+    - "topic:data-engineering stars:>50 pushed:>2026-01-01"
+    - "topic:analytics stars:>100 pushed:>2026-01-01"
+    - "topic:cli stars:>100 pushed:>2026-01-01"
+    - "topic:ai stars:>300 pushed:>2026-01-01"
+    - "topic:no-code stars:>50 pushed:>2026-01-01"
+    - "topic:productivity stars:>100 pushed:>2026-01-01"
+    - "topic:api stars:>200 pushed:>2026-01-01"
   target_keywords:
-    - agent
     - automation
     - deploy
     - hosted
-    - rag
-    - mcp
     - workflow
     - scraper
     - dashboard
+    - security
+    - monitoring
+    - analytics
+    - self-hosted
+    - cli
+    - api
+    - integration
+    - no-code
 safety:
   max_search_requests_per_run: 10
   min_seconds_between_requests: 2.0
