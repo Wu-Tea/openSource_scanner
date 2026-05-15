@@ -73,3 +73,44 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Push latest `main` to origin.
 - Next likely feature: improve opportunity quality by adding configurable source queries and perhaps issue/discussion signals, or add a richer experiment status layer if the shortlist report proves useful.
+
+### 2026-05-15 - GitHub safety controls and larger scan
+
+**Goal:** Add safety guardrails before pulling more GitHub results, then run a larger scan.
+
+**What changed:**
+
+- Added safety config under `config/sources.yml`.
+- Increased `github.max_results` to 100.
+- Added fail-closed safety validation for request budget, request spacing, rate-limit floor, and boolean parsing.
+- Added GitHub rate-limit state parsing from response headers.
+- Added scan safeguards: request budget, request spacing, early stop when remaining quota reaches the configured floor, and CLI overrides.
+- Updated README safety guidance.
+
+**Subagent results:**
+
+- Worker I / Hilbert implemented the safety controls with TDD.
+- Bacon's spec review approved the implementation.
+- Archimedes's quality review required fail-closed safety config validation.
+- Hilbert fixed validation and added regression tests.
+- Helmholtz re-reviewed and approved the fix.
+
+**Verification:**
+
+- Worker reported RED tests first, then `uv run pytest -v` -> 52 passed and `uv run ruff check src tests` -> all checks passed.
+- Coordinator reran `uv run pytest -q` -> 52 passed.
+- Coordinator reran `uv run ruff check src tests` -> all checks passed.
+- Coordinator verified `uv run oss-scan scan --help` shows safety override options.
+- Larger real scan: `uv run oss-scan scan --limit 100 --max-search-requests 10` -> 500 observations from 5 GitHub search requests.
+- Generated `reports/2026-05-15.md` with Top 100 opportunities.
+- SQLite now contains 472 unique opportunities; all are currently `new`.
+
+**Context files updated:**
+
+- `.agent-context/handoff.md`
+- `.agent-context/session-log.md`
+
+**Follow-up:**
+
+- Review the generated report and mark the best candidates as `package`, `watch`, or `saved`.
+- Consider adding issue/discussion/release-detail enrichment only for top-ranked or feedback-marked candidates.

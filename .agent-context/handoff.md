@@ -14,11 +14,13 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - First small real scan/report verification succeeded with `--limit 1`; generated data was inspected and then removed.
 - Opportunity memo workflow is implemented and verified: `oss-scan memo SOURCE SOURCE_ID` writes Chinese review memos under `memos/` and protects existing files unless `--force` is used.
 - Shortlist pipeline is implemented and verified: `oss-scan shortlist` groups `package`, `watch`, and `saved` opportunities into a Markdown pipeline view.
+- GitHub scan safety controls are implemented: per-run request budget, request spacing, rate-limit state capture, rate-limit floor stop, and fail-closed safety config validation.
+- A larger safe scan ran with `--limit 100 --max-search-requests 10`; it used 5 GitHub search requests, stored 500 observations, and produced 472 unique opportunities in the local SQLite DB.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Push latest shortlist work, then improve opportunity quality by tuning source queries/scoring or adding richer issue/discussion signals.
+Review `reports/2026-05-15.md`, mark promising entries with `feedback`, then generate memos/shortlist for the strongest candidates.
 
 ## Blockers
 
