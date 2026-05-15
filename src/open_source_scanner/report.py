@@ -53,7 +53,10 @@ def _decode_json_list(value: Any) -> list[str]:
         return []
     if isinstance(value, list):
         return [str(item) for item in value]
-    decoded = json.loads(str(value))
+    try:
+        decoded = json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return []
     if not isinstance(decoded, list):
         return []
     return [str(item) for item in decoded]

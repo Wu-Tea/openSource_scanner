@@ -39,6 +39,29 @@ def test_render_markdown_report_handles_empty_rows():
     assert "No opportunities found" in markdown
 
 
+def test_render_markdown_report_handles_malformed_json_fields():
+    rows = [
+        {
+            "title": "demo/bad-json",
+            "url": "https://github.com/demo/bad-json",
+            "description": "Report row with malformed JSON fields",
+            "score": 42,
+            "stars": 10,
+            "license_spdx_id": None,
+            "packaging_signals_json": "not-json",
+            "reasons_json": "not-json",
+            "penalties_json": "not-json",
+            "feedback_status": "new",
+        }
+    ]
+
+    markdown = render_markdown_report(rows, report_date="2026-05-15")
+
+    assert "Packaging signals: none" in markdown
+    assert "Reasons: none" in markdown
+    assert "Penalties: none" in markdown
+
+
 def test_write_report_creates_output_directory_and_dated_file(tmp_path: Path):
     output_path = write_report([], report_date="2026-05-15", output_dir=tmp_path / "reports")
 
