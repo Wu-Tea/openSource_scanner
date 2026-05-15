@@ -46,6 +46,7 @@ uv run oss-scan scan --limit 50
 uv run oss-scan report --today
 uv run oss-scan feedback github 123 package
 uv run oss-scan memo github 123
+uv run oss-scan shortlist
 ```
 
 Use the `Feedback target` shown in a report as the `source` and `source_id`
@@ -60,6 +61,11 @@ run `uv run oss-scan memo github 123 --force`.
 Memos are human review aids. They summarize public project facts and suggest
 conservative packaging hypotheses, but they are not legal advice, business
 guarantees, or proof that a project can be commercialized safely.
+
+The shortlist command turns feedback decisions into a lightweight pipeline
+report at `reports/shortlist.md`. By default, it includes `package`, `watch`,
+and `saved` opportunities so you can see what is ready for a memo or 7-day
+experiment, what should be monitored, and what still needs a decision.
 
 Feedback statuses:
 
