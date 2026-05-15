@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 
+import httpx
 from typer.testing import CliRunner
 
 from open_source_scanner import __main__ as cli
@@ -63,6 +64,15 @@ def test_feedback_rejects_invalid_status(tmp_path: Path, monkeypatch) -> None:
     assert result.exit_code == 1
     assert "Invalid feedback status" in result.output
     assert "new, saved, dismissed, watch, package" in result.output
+
+
+def test_feedback_exits_when_target_does_not_exist(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("OSS_SCANNER_DB", str(tmp_path / "scanner.sqlite"))
+
+    result = runner.invoke(cli.app, ["feedback", "github", "missing", "package"])
+
+    assert result.exit_code == 1
+    assert "No opportunity found for github:missing" in result.output
 
 
 def test_report_command_writes_empty_store_report(tmp_path: Path, monkeypatch) -> None:
@@ -145,3 +155,32 @@ def test_scan_normalizes_scores_and_stores_fake_github_results(
     assert rows[0]["source_id"] == "123"
     assert rows[0]["title"] == "demo/agent-kit"
     assert rows[0]["score"] > 0
+
+
+def test_scan_handles_network_errors_without_leaking_request_url(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    config_dir = tmp_path / "config"
+    _write_config(config_dir)
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+
+    class FailingGitHubConnector:
+        def search_repositories(self, query: str, limit: int) -> list[RawRepository]:
+            request = httpx.Request(
+                "GET",
+                "https://api.github.com/search/repositories?access_token=secret-token",
+            )
+            raise httpx.RequestError("connection failed", request=request)
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(cli, "GitHubConnector", FailingGitHubConnector)
+
+    result = runner.invoke(cli.app, ["scan", "--config-dir", str(config_dir), "--limit", "5"])
+
+    assert result.exit_code == 1
+    assert "GitHub network error" in result.output
+    assert "secret-token" not in result.output
+    assert "access_token" not in result.output

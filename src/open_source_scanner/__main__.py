@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import cast
 
+import httpx
 import typer
 from rich.console import Console
 
@@ -66,6 +67,15 @@ def scan(
     except GitHubConnectorError as exc:
         console.print(f"[red]GitHub scan failed: {exc}[/red]")
         raise typer.Exit(code=1) from exc
+    except httpx.HTTPError as exc:
+        console.print(
+            "[red]GitHub network error: request failed. "
+            "Check network access and GitHub availability.[/red]"
+        )
+        raise typer.Exit(code=1) from exc
+    except ValueError as exc:
+        console.print("[red]GitHub response could not be processed.[/red]")
+        raise typer.Exit(code=1) from exc
     finally:
         connector.close()
 
@@ -99,7 +109,10 @@ def feedback(
         raise typer.Exit(code=1)
 
     store = _store()
-    store.set_feedback(source, source_id, cast(FeedbackStatus, status))
+    updated = store.set_feedback(source, source_id, cast(FeedbackStatus, status))
+    if not updated:
+        console.print(f"[red]No opportunity found for {source}:{source_id}.[/red]")
+        raise typer.Exit(code=1)
     console.print(f"[green]Feedback saved for {source}:{source_id} -> {status}[/green]")
 
 

@@ -32,6 +32,9 @@ uv run oss-scan report --today
 uv run oss-scan feedback github 123 package
 ```
 
+Use the `Feedback target` shown in a report as the `source` and `source_id`
+arguments for `feedback`.
+
 Feedback statuses:
 
 - `new`: default state

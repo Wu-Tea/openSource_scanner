@@ -56,8 +56,9 @@ def test_initialize_upsert_feedback_and_ranked_listing(tmp_path: Path):
         _opportunity("tie", title="example/tie", stars=900), _score(90), seen_at
     )
 
-    store.set_feedback("github", "high", "saved")
-    store.set_feedback("github", "low", "dismissed")
+    assert store.set_feedback("github", "high", "saved") is True
+    assert store.set_feedback("github", "low", "dismissed") is True
+    assert store.set_feedback("github", "missing", "package") is False
 
     second_seen_at = datetime(2026, 5, 15, 11, 0, tzinfo=UTC)
     store.upsert_opportunity(
