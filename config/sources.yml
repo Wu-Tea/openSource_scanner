@@ -1,0 +1,19 @@
+github:
+  enabled: true
+  max_results: 50
+  repository_queries:
+    - "topic:ai stars:>100 pushed:>2026-01-01"
+    - "topic:automation stars:>50 pushed:>2026-01-01"
+    - "topic:rag stars:>50 pushed:>2026-01-01"
+    - "topic:mcp stars:>20 pushed:>2026-01-01"
+    - "topic:self-hosted stars:>100 pushed:>2026-01-01"
+  target_keywords:
+    - agent
+    - automation
+    - deploy
+    - hosted
+    - rag
+    - mcp
+    - workflow
+    - scraper
+    - dashboard
