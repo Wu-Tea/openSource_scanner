@@ -10,6 +10,43 @@ from open_source_scanner.models import RawRepository
 
 
 GITHUB_API_BASE = "https://api.github.com"
+RATE_LIMIT_HEADER_NAMES = {
+    "retry-after",
+    "x-ratelimit-limit",
+    "x-ratelimit-remaining",
+    "x-ratelimit-reset",
+    "x-ratelimit-resource",
+    "x-ratelimit-used",
+}
+
+
+class GitHubConnectorError(Exception):
+    def __init__(
+        self,
+        *,
+        status_code: int,
+        github_message: str,
+        rate_limit_headers: dict[str, str],
+        query: str,
+        auth_used: bool,
+    ) -> None:
+        self.status_code = status_code
+        self.github_message = github_message
+        self.rate_limit_headers = rate_limit_headers
+        self.query = query
+        self.auth_used = auth_used
+        super().__init__(self._human_message())
+
+    def _human_message(self) -> str:
+        auth_context = "authenticated request" if self.auth_used else "unauthenticated request"
+        message = (
+            f"GitHub repository search failed for query {self.query!r} "
+            f"with status {self.status_code}: {self.github_message} ({auth_context})"
+        )
+        rate_context = _format_rate_limit_context(self.rate_limit_headers)
+        if rate_context:
+            message = f"{message}; {rate_context}"
+        return message
 
 
 class GitHubConnector:
@@ -21,6 +58,7 @@ class GitHubConnector:
     ) -> None:
         self._owns_client = client is None
         resolved_token = token if token is not None else os.getenv("GITHUB_TOKEN")
+        self._auth_used = bool(resolved_token)
         self._headers = {
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
@@ -34,17 +72,27 @@ class GitHubConnector:
             self._client.close()
 
     def search_repositories(self, query: str, limit: int) -> list[RawRepository]:
+        if limit < 1 or limit > 100:
+            raise ValueError("GitHub repository search limit must be between 1 and 100 for V1")
+
         response = self._client.get(
             "/search/repositories",
             params={
                 "q": query,
                 "sort": "updated",
                 "order": "desc",
-                "per_page": min(limit, 100),
+                "per_page": limit,
             },
             headers=self._headers,
         )
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise _github_connector_error(
+                response=exc.response,
+                query=query,
+                auth_used=self._auth_used,
+            ) from exc
         items = response.json().get("items", [])
         if not isinstance(items, list):
             return []
@@ -75,3 +123,55 @@ class GitHubConnector:
             owner_type=str(owner_type) if owner_type else None,
             raw=dict(item),
         )
+
+
+def _github_connector_error(
+    *,
+    response: httpx.Response,
+    query: str,
+    auth_used: bool,
+) -> GitHubConnectorError:
+    return GitHubConnectorError(
+        status_code=response.status_code,
+        github_message=_github_message(response),
+        rate_limit_headers=_rate_limit_headers(response),
+        query=query,
+        auth_used=auth_used,
+    )
+
+
+def _github_message(response: httpx.Response) -> str:
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = None
+    if isinstance(payload, dict) and isinstance(payload.get("message"), str):
+        return payload["message"]
+    return response.text or response.reason_phrase
+
+
+def _rate_limit_headers(response: httpx.Response) -> dict[str, str]:
+    return {
+        key.lower(): value
+        for key, value in response.headers.items()
+        if key.lower() in RATE_LIMIT_HEADER_NAMES
+    }
+
+
+def _format_rate_limit_context(rate_limit_headers: dict[str, str]) -> str:
+    fields = [
+        ("x-ratelimit-remaining", "remaining"),
+        ("x-ratelimit-limit", "limit"),
+        ("x-ratelimit-reset", "reset"),
+        ("x-ratelimit-used", "used"),
+        ("x-ratelimit-resource", "resource"),
+        ("retry-after", "retry_after"),
+    ]
+    parts = [
+        f"{label}={rate_limit_headers[header]}"
+        for header, label in fields
+        if header in rate_limit_headers
+    ]
+    if not parts:
+        return ""
+    return f"rate limit context: {', '.join(parts)}"

@@ -57,8 +57,9 @@ def test_active_packagable_repo_scores_high_with_explanations() -> None:
 
     score = score_opportunity(_opportunity(), _config(), now=now, feedback_status="watch")
 
-    assert score.total >= 90
-    assert any("packaging keywords" in reason for reason in score.reasons)
+    assert score.total == 82
+    assert not any("packaging keywords" in reason for reason in score.reasons)
+    assert sum("packaging fit signals" in reason for reason in score.reasons) == 1
     assert any("popular repository" in reason for reason in score.reasons)
     assert any("recent activity" in reason for reason in score.reasons)
     assert any("preferred license" in reason for reason in score.reasons)

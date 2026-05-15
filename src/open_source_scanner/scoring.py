@@ -16,12 +16,6 @@ def score_opportunity(
     penalties: list[str] = []
     total = 0
 
-    matched_keywords = _matching_keywords(opportunity, config.packaging_keywords)
-    if matched_keywords:
-        weight = config.weights.get("keyword_match", 0)
-        total += weight
-        reasons.append(f"packaging keywords found: {', '.join(matched_keywords)} (+{weight})")
-
     popularity_weight = config.weights.get("repo_popularity", 0)
     if opportunity.stars >= 1000:
         total += popularity_weight
@@ -83,16 +77,3 @@ def score_opportunity(
         penalties.append(f"weak description: fewer than 20 characters ({penalty})")
 
     return ScoreBreakdown(total=max(total, 0), reasons=reasons, penalties=penalties)
-
-
-def _matching_keywords(opportunity: Opportunity, packaging_keywords: list[str]) -> list[str]:
-    searchable_text = " ".join(
-        [
-            opportunity.title,
-            opportunity.description,
-            opportunity.project,
-            *opportunity.topics,
-            *opportunity.packaging_signals,
-        ]
-    ).casefold()
-    return [keyword for keyword in packaging_keywords if keyword.casefold() in searchable_text]
