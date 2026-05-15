@@ -16,6 +16,7 @@ from open_source_scanner.models import FeedbackStatus
 from open_source_scanner.normalize import normalize_repository
 from open_source_scanner.report import write_report
 from open_source_scanner.scoring import score_opportunity
+from open_source_scanner.shortlist import write_shortlist
 from open_source_scanner.storage import OpportunityStore
 
 
@@ -124,6 +125,23 @@ def memo(
 
 
 @app.command()
+def shortlist(
+    statuses: str = typer.Option(
+        "package,watch,saved",
+        help="Comma-separated feedback statuses to include.",
+    ),
+    limit: int = typer.Option(50, min=1, help="Maximum opportunities to include."),
+    output: Path = typer.Option(Path("reports/shortlist.md"), help="Shortlist output path."),
+) -> None:
+    parsed_statuses = _parse_feedback_statuses(statuses)
+    report_date = datetime.now(tz=UTC).date().isoformat()
+    store = _store()
+    rows = store.list_by_feedback(list(parsed_statuses), limit=limit)
+    output_path = write_shortlist(rows, report_date=report_date, output_path=output)
+    console.print(f"[green]Shortlist written to {output_path}[/green]")
+
+
+@app.command()
 def feedback(
     source: str = typer.Argument(..., help="Opportunity source, such as github."),
     source_id: str = typer.Argument(..., help="Source-specific opportunity id."),
@@ -142,6 +160,18 @@ def feedback(
         console.print(f"[red]No opportunity found for {source}:{source_id}.[/red]")
         raise typer.Exit(code=1)
     console.print(f"[green]Feedback saved for {source}:{source_id} -> {status}[/green]")
+
+
+def _parse_feedback_statuses(value: str) -> tuple[FeedbackStatus, ...]:
+    statuses = tuple(status.strip() for status in value.split(",") if status.strip())
+    invalid_statuses = [status for status in statuses if status not in FEEDBACK_STATUSES]
+    if invalid_statuses:
+        console.print(
+            "[red]Invalid shortlist status. Use one of: "
+            f"{', '.join(FEEDBACK_STATUSES)}[/red]"
+        )
+        raise typer.Exit(code=1)
+    return cast(tuple[FeedbackStatus, ...], statuses)
 
 
 if __name__ == "__main__":

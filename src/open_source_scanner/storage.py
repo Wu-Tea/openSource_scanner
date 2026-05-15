@@ -179,6 +179,34 @@ class OpportunityStore:
             ).fetchall()
         return [dict(row) for row in rows]
 
+    def list_by_feedback(self, statuses: list[str], limit: int) -> list[dict[str, Any]]:
+        if not statuses:
+            return []
+
+        placeholders = ", ".join("?" for _ in statuses)
+        with self._connect() as conn:
+            rows = conn.execute(
+                f"""
+                SELECT *
+                FROM opportunities
+                WHERE feedback_status IN ({placeholders})
+                ORDER BY
+                    CASE feedback_status
+                        WHEN 'package' THEN 0
+                        WHEN 'watch' THEN 1
+                        WHEN 'saved' THEN 2
+                        WHEN 'new' THEN 3
+                        WHEN 'dismissed' THEN 4
+                        ELSE 5
+                    END,
+                    score DESC,
+                    stars DESC
+                LIMIT ?
+                """,
+                (*statuses, limit),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.path)
         conn.row_factory = sqlite3.Row
