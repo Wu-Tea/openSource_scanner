@@ -179,3 +179,33 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Add risk/downranking rules before marking candidates, because high scores still include some platform-ToS-sensitive automation and anti-detection projects.
 - Generate memos for the top safe non-AI candidates after risk filtering.
+
+### 2026-05-18 - Multi-round broad discovery scan
+
+**Goal:** Run several additional GitHub discovery rounds to find stronger non-AI and packaging-friendly projects.
+
+**What ran:**
+
+- Baseline before scan: 1336 unique opportunities in `data/scanner.sqlite`.
+- Round 1: 10 infra/devops queries covering PaaS, platform engineering, Kubernetes dashboards, Terraform, observability, backup, reverse proxy, homelab, Docker Compose, and FinOps.
+- Round 2: 10 security/data queries covering AppSec, vulnerability scanners, SAST, secret scanning, IAM, zero trust, data visualization, ETL, workflow orchestration, and data quality.
+- Round 3: 10 product/business/media queries covering billing, usage-based billing, webhooks, API gateway, PDF, knowledge base, helpdesk, CRM, UI builder, and design systems.
+- Each query used 7-second spacing and stopped well above the configured rate-limit floor.
+- Total observations: 1904 from 30 GitHub search requests.
+- Regenerated report: `uv run oss-scan report --today --limit 160 --per-category 8`, output `reports/2026-05-18.md`.
+
+**Observed data after scan:**
+
+- Local SQLite contains 2951 unique non-dismissed opportunities, a net increase of 1615.
+- Category counts: Infra / DevOps 740, AI / Agents 628, Data / Analytics 406, Security / Privacy 294, Developer Tools 266, Web / App Frameworks 121, Productivity / Knowledge 117, Automation / Workflow 113, Other 93, Media / Design 89, Commerce / Growth 84.
+- Newly surfaced high-score candidates include `databasus/databasus`, `krayin/laravel-crm`, `uselotus/lotus`, `dromara/MaxKey`, `krakend/krakend-ce`, `skyhook-io/radar`, `wiredoor/wiredoor`, `DDULDDUCK/every-pdf`, `LibPDF-js/core`, `openappsec/openappsec`, `cloudsplaining`, `policy_sentry`, `databasus/databasus`, `gobackup/gobackup`, and `community-scripts/ProxmoxVE`.
+
+**Candidate-quality notes:**
+
+- Best packaging-friendly areas surfaced: database backup/restore, IAM/SSO, API gateway/webhooks, PDF/document tooling, CRM/billing, Kubernetes/self-hosted operations, and security reporting.
+- The scan also surfaced noisy high-score items such as vulnerable lab environments, crawler/scraper frameworks, anti-detection/browser automation, and platform-specific automation; those need risk/downranking before shortlist automation.
+
+**Follow-up:**
+
+- Add explicit risk labels/downranking for vulnerable labs, scraper/crawler/proxy-rotation projects, account/platform automation, and offensive-only security collections.
+- Generate memos for the strongest safe candidates after applying the risk filter.

@@ -18,13 +18,14 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Multi-category opportunity reporting is implemented and pushed in commit `f569eb9`: default GitHub queries now cover developer tools, infra, automation, DevOps, security, monitoring, data, analytics, CLI, and a capped AI query.
 - `oss-scan report` now defaults to balanced category output with `--balanced/--global` and `--per-category`; reports include `Category:` for each opportunity.
 - A scoring edge case is fixed: future-looking GitHub `pushed_at` timestamps are displayed as `pushed 0 days ago`, not negative days.
-- Latest larger safe scan ran with `uv run oss-scan scan --limit 100 --max-search-requests 13 --min-seconds-between-requests 6`; it stored 1300 observations from 13 GitHub search requests.
-- Local SQLite now contains 1336 unique non-dismissed opportunities; category distribution is approximately AI / Agents 477, Infra / DevOps 217, Data / Analytics 189, Developer Tools 174, Automation / Workflow 96, Security / Privacy 95, Productivity / Knowledge 44, Web / App Frameworks 30, Media / Design 10, Commerce / Growth 4.
+- Latest multi-round scan ran on 2026-05-18 across 30 extra GitHub search queries with 7-second spacing; it stored 1904 observations across infra/devops, security/data, and product/business/media themes.
+- Latest generated report: `reports/2026-05-18.md` with `--limit 160 --per-category 8`.
+- Local SQLite now contains 2951 unique non-dismissed opportunities; category distribution is approximately Infra / DevOps 740, AI / Agents 628, Data / Analytics 406, Security / Privacy 294, Developer Tools 266, Web / App Frameworks 121, Productivity / Knowledge 117, Automation / Workflow 113, Other 93, Media / Design 89, Commerce / Growth 84.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Review the diversified `reports/2026-05-15.md`, prioritize new non-AI candidates such as `dokku/dokku`, `mswjs/msw`, `gotenberg/gotenberg`, `nocode-js/sequential-workflow-designer`, `standard-webhooks/standard-webhooks`, and then add risk/downranking rules for gray-area automation, bot, anti-detection, and platform-ToS-sensitive projects.
+Review the diversified `reports/2026-05-18.md`, prioritize newly surfaced candidates such as `databasus/databasus`, `krayin/laravel-crm`, `uselotus/lotus`, `dromara/MaxKey`, `krakend/krakend-ce`, `skyhook-io/radar`, `wiredoor/wiredoor`, `DDULDDUCK/every-pdf`, and continue adding risk/downranking rules for gray-area automation, bot, anti-detection, vulnerable-lab, scraper/crawler, and platform-ToS-sensitive projects.
 
 ## Blockers
 
