@@ -209,3 +209,33 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Add explicit risk labels/downranking for vulnerable labs, scraper/crawler/proxy-rotation projects, account/platform automation, and offensive-only security collections.
 - Generate memos for the strongest safe candidates after applying the risk filter.
+
+### 2026-05-18 - Vertical pain-point discovery scan
+
+**Goal:** Reorient discovery away from geek/professional infrastructure and toward vertical solutions or small-scope pain points that could be packaged for less technical users.
+
+**What ran:**
+
+- Baseline before scan: 2951 unique opportunities in `data/scanner.sqlite`.
+- Round 1: small-business operations queries covering inventory, POS, restaurants, hotels, property management, booking, appointments, scheduling, invoice management, and order management.
+- Round 2: industry/profession vertical queries covering school/LMS, clinic/hospital, dental, veterinary, law firm, real estate, gym, and membership management.
+- Round 3: small pain-point tool queries covering ticketing, helpdesk, events, form builder, surveys, document management, knowledge base, asset management, maintenance, and field service.
+- Round 4: everyday utility queries covering spreadsheets, resume builders, contract management, receipt scanning, QR menu, employee scheduling, calendar apps, rental management, and personal finance. The run stopped at the configured rate-limit floor before expense tracking.
+- Total observations: 1050 across 39 GitHub search requests.
+- Regenerated report: `uv run oss-scan report --today --limit 180 --per-category 10`.
+
+**Observed data after scan:**
+
+- Local SQLite contains 3826 unique non-dismissed opportunities, a net increase of 875.
+- New vertical-oriented buckets from the ad hoc classifier: Forms & Docs 326, Business Ops 305, Events & Membership 56, Education 51, Finance & Billing 40, Healthcare 36, Real Estate 29, Knowledge & Notes 19, Support & Service 12.
+- Stronger vertical/small-pain candidates include `TDuckCloud/tduck-survey-form`, `tastyigniter/TastyIgniter`, `mighty840/kitchenasty`, `evangauer/openvpm`, `microrealestate/microrealestate`, `krayin/laravel-crm`, `MicroPyramid/Django-CRM`, `OpenReservation/OpenReservation`, `classiebit/eventmie`, `simonwep/ocular`, `RIP-Comm/sossoldi`, `hisabi-app/hisabi`, `sw-carlos-cristobal/sharetab`, `dadaloop82/EverShelf`, `FOSSBilling/FOSSBilling`, `amruthpillai/reactive-resume`, and `LingyiChen-AI/JadeAI`.
+
+**Candidate-quality notes:**
+
+- The default technical scoring still over-ranks generic frameworks and infrastructure when vertical projects have fewer stars or fewer deployment keywords.
+- A vertical-opportunity tagger/report is needed so target-user pain points such as restaurant ordering, veterinary practice management, rental management, forms/surveys, booking, and personal finance are visible without manual filtering.
+
+**Follow-up:**
+
+- Implement a vertical report mode or scoring overlay that prioritizes explicit target users and domain workflows over generic technical popularity.
+- Generate memos for a small set of vertical candidates after adding the overlay.

@@ -21,11 +21,13 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Latest multi-round scan ran on 2026-05-18 across 30 extra GitHub search queries with 7-second spacing; it stored 1904 observations across infra/devops, security/data, and product/business/media themes.
 - Latest generated report: `reports/2026-05-18.md` with `--limit 160 --per-category 8`.
 - Local SQLite now contains 2951 unique non-dismissed opportunities; category distribution is approximately Infra / DevOps 740, AI / Agents 628, Data / Analytics 406, Security / Privacy 294, Developer Tools 266, Web / App Frameworks 121, Productivity / Knowledge 117, Automation / Workflow 113, Other 93, Media / Design 89, Commerce / Growth 84.
+- Latest vertical-pain scan ran on 2026-05-18 across 39 extra GitHub search queries with 7-second spacing; it stored 1050 observations across small-business ops, industry/profession verticals, small pain-point tools, and everyday personal/team utilities.
+- Local SQLite now contains 3826 unique non-dismissed opportunities after the vertical scan, a net increase of 875 from the prior baseline. New vertical buckets: Forms & Docs 326, Business Ops 305, Events & Membership 56, Education 51, Finance & Billing 40, Healthcare 36, Real Estate 29, Knowledge & Notes 19, Support & Service 12.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Review the diversified `reports/2026-05-18.md`, prioritize newly surfaced candidates such as `databasus/databasus`, `krayin/laravel-crm`, `uselotus/lotus`, `dromara/MaxKey`, `krakend/krakend-ce`, `skyhook-io/radar`, `wiredoor/wiredoor`, `DDULDDUCK/every-pdf`, and continue adding risk/downranking rules for gray-area automation, bot, anti-detection, vulnerable-lab, scraper/crawler, and platform-ToS-sensitive projects.
+Prioritize vertical/small-pain candidates over developer infrastructure: `TDuckCloud/tduck-survey-form`, `tastyigniter/TastyIgniter`, `mighty840/kitchenasty`, `evangauer/openvpm`, `microrealestate/microrealestate`, `krayin/laravel-crm`, `classiebit/eventmie`, `sw-carlos-cristobal/sharetab`, `dadaloop82/EverShelf`, `FOSSBilling/FOSSBilling`, and `OpenReservation/OpenReservation`. Next product feature should add a vertical-opportunity report/tagger so these are not buried by generic technical score.
 
 ## Blockers
 
