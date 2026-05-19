@@ -305,3 +305,51 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - Implement workflow-family taxonomy and `--focus workflow`.
 - Add score reasons for workflow signals such as renewal, expiration, owner approval, document chase, evidence packet, and export format.
 - Add risk filtering for platform automation, demo/sample repos, library-only repos, and unknown-license repos before memo generation.
+
+### 2026-05-19 - Workflow-family discovery scan
+
+**Goal:** Run several GitHub scans based on the deep-research direction: existing-budget, dirty-workflow, high-error-cost opportunities instead of generic vertical nouns.
+
+**What ran:**
+
+- Baseline before scan: 3985 unique non-dismissed opportunities.
+- Strict report-keyword pass: 24 GitHub search requests across RFP/security response, agency delivery, permits/vendor compliance, and finance/professional workflows. It added 19 observations and 19 net-new unique opportunities. Many exact phrase queries returned zero results, especially permit, COI, tax portal, and construction submittal phrases.
+- Broader workflow-language pass: 31 GitHub search requests across proposal/tender/bid management, client portals/document chasing, vendor/supplier/credential/permit operations, and dispute/professional workflows. It added 411 observations and 377 net-new unique opportunities.
+- Final local SQLite total: 4381 unique non-dismissed opportunities.
+- Regenerated `reports/2026-05-19.md` with `uv run oss-scan report --today --focus vertical --limit 220 --output-dir reports`.
+
+**Observed workflow buckets from new rows:**
+
+- RFP / Proposal / Security Questionnaire: 106 heuristic matches.
+- Vendor Compliance / COI / Credentials: 87 heuristic matches.
+- Accounting / Tax / AP / Documents: 76 heuristic matches.
+- Permits / Licenses / Inspections: 19 heuristic matches.
+- Agency / Client Delivery / Change Orders: 14 heuristic matches.
+- Chargeback / Dispute Evidence: 7 heuristic matches.
+- Professional Service Client Portals: 4 heuristic matches.
+
+**Promising candidates:**
+
+- `kutcode/trustreply` - open-source questionnaire response automation for vendor, security, privacy, compliance, and due-diligence workflows.
+- `BuildSphere-dev/OPTIBIDS` - B2B AI-driven RFP and tender-management workflow; very aligned but young.
+- `JakeLeoDev/proposit` - self-hosted proposal management with multi-tenancy, AI, PDF export, and public sharing.
+- `monte-carlo-data/transparent-trust` - RFP/security questionnaire/compliance document answering with transparency positioning.
+- `FlowEngine-cloud/flowengine` - white-label client portal for automation agencies; potentially strong agency-delivery wedge but license needs review.
+- `Vibra-Labs/Atrium` - self-hosted agency/freelancer client portal; license appears restrictive and needs review.
+- `parthg-cmyk/Vendor-Portal-Purchase-Automation-System` and `7007259Ankur/vendor-onboarding-portal` - vendor onboarding and approval workflows.
+- `AmanuelZ/govstack-bb-registration-et` - business registration and trade-license renewal reference implementation; useful permit/license signal but country-specific.
+- `amohamed369/perm` - PERM immigration case-management tracker; very niche professional-service portal signal.
+- `auxilium-software/auxilium-portal` - CRM and case-management portal for charities and third-sector organisations.
+- `UnicisTech/unicis-platform-ce` - open-source GRC platform; broader than ideal but aligned with compliance workspace thesis.
+
+**Quality notes:**
+
+- Exact workflow phrases are too sparse on GitHub; broader operational words produce better recall but introduce many false positives.
+- Current vertical report does not yet surface the best workflow-family finds because they often have low stars and narrow descriptions. This confirms the need for a dedicated workflow-family scoring layer.
+- Permit/license/COI/chargeback opportunities seem less represented as mature open-source products; these may be better found through adjacent building blocks, commercial competitor research, or service-led validation rather than GitHub stars alone.
+
+**Follow-up:**
+
+- Implement workflow-family taxonomy and `--focus workflow`; the scan results provide test fixtures.
+- Add risk labels for library-only, SDK/API-client, demo/sample, restrictive-license, platform automation, and speculative AI agent projects.
+- Write memos for `trustreply`, `OPTIBIDS`, `proposit`, `transparent-trust`, `flowengine`, `Atrium`, `PERM Tracker`, and one vendor-onboarding candidate.

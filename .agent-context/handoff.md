@@ -28,6 +28,8 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Local SQLite now contains 3985 unique non-dismissed opportunities after the focused vertical scan, a net increase of 159 from the prior baseline. New vertical buckets include Booking / Scheduling 34, Forms / Surveys / Documents 33, Inventory / Assets / Field Ops 31, Events / Membership 20, Healthcare / Clinic 14, CRM / Sales / Support 4, Finance / Billing 4, Real Estate / Property 4, and Restaurant / Hospitality 2.
 - Latest generated vertical report: `reports/2026-05-19.md` from `uv run oss-scan report --today --focus vertical --limit 160 --output-dir reports`.
 - Deep research direction memo is saved at `docs/research/2026-05-19-deep-research-direction.md`. It reframes the product around service-led workflow businesses with existing budget, dirty repeated work, and high error cost.
+- Latest workflow-family scan ran on 2026-05-19 across 55 GitHub search requests with 7-second spacing. It added 430 observations and 396 net-new unique opportunities, bringing local SQLite to 4381 unique non-dismissed opportunities.
+- Workflow scan candidates worth memo review include `kutcode/trustreply`, `BuildSphere-dev/OPTIBIDS`, `JakeLeoDev/proposit`, `monte-carlo-data/transparent-trust`, `FlowEngine-cloud/flowengine`, `Vibra-Labs/Atrium`, `parthg-cmyk/Vendor-Portal-Purchase-Automation-System`, `AmanuelZ/govstack-bb-registration-et`, `amohamed369/perm`, `auxilium-software/auxilium-portal`, and `UnicisTech/unicis-platform-ce`.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
