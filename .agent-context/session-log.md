@@ -248,7 +248,7 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Added `--focus vertical` to `oss-scan report`.
 - Added a vertical classifier and ranking overlay that boosts explicit business/domain workflows such as appointments, forms, invoices, rentals, volunteer management, property management, clinics, education, inventory, POS, field ops, and helpdesk/customer portals.
-- Added penalties for generic web/app frameworks, component libraries, generic AI/infra/developer-tool repos, and false-positive terms such as event buses or generic framework routing when no real business workflow is present.
+- Added penalties for generic web/app frameworks, component libraries, generic AI/infra/developer-tool repos, awesome lists, helper libraries, example repos, paper/survey repos, and false-positive terms such as event buses or generic framework routing when no real business workflow is present.
 - Updated README usage examples for vertical opportunity reports.
 
 **Verification:**
@@ -256,7 +256,7 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - TDD red check: targeted taxonomy/report tests initially failed because `classify_vertical_row` did not exist.
 - `uv run pytest tests/test_taxonomy.py tests/test_cli.py::test_report_command_vertical_focus_prioritizes_business_pain_points -q` -> 7 passed after implementation.
 - Added a regression test for generic event-framework false positives.
-- `uv run pytest -q` -> 61 passed.
+- `uv run pytest -q` -> 66 passed.
 - `uv run ruff check src tests` -> all checks passed.
 
 **What ran:**
@@ -276,9 +276,9 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 **Candidate-quality notes:**
 
-- The vertical overlay materially reduces generic web framework dominance, but the classifier is still heuristic and can misread generic terms such as "event" or "form" unless guarded by target-user terms.
+- The vertical overlay materially reduces generic web framework dominance. It now also avoids broad "event", "spa", and "knowledge base" false positives that previously elevated event-study papers, single-page-app topics, and personal note tools.
 - Best near-term packaging lanes are document/invoice generation, form builders, volunteer/membership management, inventory/POS/repair shop management, rentals/tenant portals, appointment booking, and niche healthcare/clinic tools.
-- Repos with missing or restrictive licenses, demo/sample positioning, or unclear maintenance should be filtered before memo generation.
+- Repos with missing or restrictive licenses, demo/sample positioning, platform-automation risk, or unclear maintenance should be filtered before memo generation.
 
 **Follow-up:**
 

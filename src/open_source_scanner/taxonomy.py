@@ -192,6 +192,8 @@ VERTICAL_DEFINITIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
             "menu",
             "table reservation",
             "online ordering",
+            "salon",
+            "barber",
             "takeaway",
             "delivery",
             "room booking",
@@ -236,6 +238,8 @@ VERTICAL_DEFINITIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
             "shared inbox",
             "customer support",
             "service desk",
+            "help center",
+            "customer portal",
             "sales",
         ),
     ),
@@ -285,6 +289,7 @@ VERTICAL_DEFINITIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
         "Education / Training",
         (
             "school",
+            "daycare",
             "student",
             "teacher",
             "learning management",
@@ -311,25 +316,14 @@ VERTICAL_DEFINITIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
     (
         "Events / Membership",
         (
-            "event",
-            "ticket",
+            "event management",
+            "event ticketing",
             "ticketing",
             "membership",
             "member directory",
             "club",
             "volunteer",
             "donation",
-        ),
-    ),
-    (
-        "Knowledge / Notes",
-        (
-            "knowledge base",
-            "wiki",
-            "notes",
-            "document search",
-            "obsidian",
-            "markdown notes",
         ),
     ),
 )
@@ -343,6 +337,11 @@ GENERIC_WEB_FRAMEWORK_TERMS = (
     "svelte",
     "nextjs",
     "tailwind",
+    "laravel",
+    "django",
+    "rails",
+    "nestjs",
+    "symfony",
     "component",
     "components",
     "starter",
@@ -351,6 +350,8 @@ GENERIC_WEB_FRAMEWORK_TERMS = (
     "theme",
     "css",
     "ui library",
+    "module",
+    "modules",
 )
 
 GENERIC_TECH_TERMS = (
@@ -358,6 +359,7 @@ GENERIC_TECH_TERMS = (
     "library",
     "sdk",
     "api",
+    "infrastructure",
     "developer tools",
     "kubernetes",
     "terraform",
@@ -373,14 +375,38 @@ VERTICAL_FALSE_POSITIVE_TERMS = (
     "developer tools",
     "framework",
     "library",
+    "helper library",
+    "code examples",
+    "examples",
+    "awesome",
+    "awesome list",
+    "knowledge list",
+    "cloud platforms",
+    "python wrapper",
+    "wrapper",
     "modules",
     "utilities",
     "sdk",
     "api developers",
     "event driven",
+    "event studies",
+    "event stream",
     "microservices",
+    "laravel",
+    "django",
+    "rails",
+    "nestjs",
+    "symfony",
     "kubernetes",
     "terraform",
+    "ansible",
+    "netbox",
+    "dcim",
+    "ipam",
+    "configuration management",
+    "infrastructure management",
+    "cloud management",
+    "remote execution",
     "devops",
     "aws security",
     "offensive",
@@ -388,6 +414,94 @@ VERTICAL_FALSE_POSITIVE_TERMS = (
     "llm",
     "agent",
     "mcp",
+    "obsidian",
+    "personal",
+    "tutorial",
+    "tutorials",
+    "papers",
+    "research",
+    "causal inference",
+    "sklearn",
+    "paper",
+    "arxiv",
+    "api testing",
+    "property based testing",
+    "pytest",
+    "fuzzing",
+    "graphql",
+    "openapi",
+    "swagger",
+    "godot",
+    "game development",
+    "editor plugin",
+    "mapbox",
+    "maplibre",
+    "scraping",
+    "scraper",
+    "python package",
+)
+
+BUSINESS_CONTEXT_TERMS = (
+    "small business",
+    "business",
+    "enterprise",
+    "restaurant",
+    "hospitality",
+    "hotel",
+    "salon",
+    "barber",
+    "clinic",
+    "hospital",
+    "doctor",
+    "patient",
+    "dental",
+    "veterinary",
+    "school",
+    "student",
+    "teacher",
+    "daycare",
+    "invoice",
+    "quote",
+    "billing",
+    "payment",
+    "bookkeeping",
+    "expense",
+    "form builder",
+    "survey",
+    "questionnaire",
+    "document management",
+    "contract",
+    "receipt",
+    "crm",
+    "customer",
+    "helpdesk",
+    "service desk",
+    "customer portal",
+    "inventory",
+    "warehouse",
+    "barcode",
+    "stock",
+    "pos",
+    "repair shop",
+    "field service",
+    "maintenance",
+    "work order",
+    "equipment rental",
+    "property",
+    "real estate",
+    "tenant",
+    "landlord",
+    "lease",
+    "apartment",
+    "booking",
+    "appointment",
+    "reservation",
+    "staff scheduling",
+    "event management",
+    "event ticketing",
+    "membership",
+    "volunteer",
+    "nonprofit",
 )
 
 
@@ -500,17 +614,24 @@ def _vertical_score(row: dict[str, Any], vertical_category: str) -> int:
     category = classify_row(row)
     text = _row_text(row)
     tokens = text.split()
+    business_context_hits = _business_context_count(text, tokens)
 
     if vertical_category != VERTICAL_OTHER_CATEGORY:
-        score += 40
-        score += min(_matched_vertical_keyword_count(text, tokens) * 3, 18)
+        score += 25
+        score += min(_matched_vertical_keyword_count(text, tokens) * 4, 24)
+        if business_context_hits:
+            score += min(business_context_hits * 8, 40)
+        else:
+            score -= 45
     else:
         score -= 20
 
     if category == "Web / App Frameworks":
-        score -= 35
+        score -= 45
     elif category in {"Developer Tools", "Infra / DevOps", "AI / Agents"}:
-        score -= 15
+        score -= 35
+    elif category == "Productivity / Knowledge":
+        score -= 35
     elif category == "Security / Privacy" and vertical_category != VERTICAL_OTHER_CATEGORY:
         score -= 20
 
@@ -520,7 +641,9 @@ def _vertical_score(row: dict[str, Any], vertical_category: str) -> int:
 
     false_positive_hits = sum(_keyword_score(term, text, tokens) for term in VERTICAL_FALSE_POSITIVE_TERMS)
     if false_positive_hits:
-        score -= min(false_positive_hits * 12, 72)
+        score -= min(false_positive_hits * 16, 112)
+        if not business_context_hits:
+            score -= 35
 
     if vertical_category == VERTICAL_OTHER_CATEGORY:
         generic_tech_hits = sum(_keyword_score(term, text, tokens) for term in GENERIC_TECH_TERMS)
@@ -545,6 +668,10 @@ def _matched_vertical_keyword_count(text: str, tokens: list[str]) -> int:
             if _keyword_score(keyword, text, tokens):
                 count += 1
     return count
+
+
+def _business_context_count(text: str, tokens: list[str]) -> int:
+    return sum(_keyword_score(term, text, tokens) for term in BUSINESS_CONTEXT_TERMS)
 
 
 def _with_category(row: dict[str, Any]) -> dict[str, Any]:

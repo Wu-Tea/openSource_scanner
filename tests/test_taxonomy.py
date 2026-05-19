@@ -126,6 +126,123 @@ def test_vertical_report_downranks_frameworks_with_generic_event_terms() -> None
     assert [row["source_id"] for row in ranked] == ["volunteer", "nestjs"]
 
 
+def test_vertical_report_downranks_research_event_false_positives() -> None:
+    rows = [
+        {
+            "source_id": "research",
+            "title": "demo/event-studies",
+            "description": "Difference-in-Differences causal inference and event studies with a sklearn-like API",
+            "score": 95,
+            "stars": 20000,
+            "topics_json": '["statistics", "research", "python"]',
+            "packaging_signals_json": '["api"]',
+        },
+        {
+            "source_id": "volunteer",
+            "title": "demo/volunteer-manager",
+            "description": "Volunteer and event management platform for local nonprofit organizations",
+            "score": 55,
+            "stars": 80,
+            "topics_json": '["volunteer-management", "event-management"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=2)
+
+    assert [row["source_id"] for row in ranked] == ["volunteer", "research"]
+
+
+def test_vertical_report_downranks_personal_knowledge_tools() -> None:
+    rows = [
+        {
+            "source_id": "notes",
+            "title": "demo/obsidian-ai-notes",
+            "description": "Personal Obsidian notes workflow with LLM wiki-links, tutorials, and papers",
+            "score": 95,
+            "stars": 20000,
+            "topics_json": '["obsidian", "llm", "notes"]',
+            "packaging_signals_json": '["plugin"]',
+        },
+        {
+            "source_id": "invoice",
+            "title": "demo/invoice-generator",
+            "description": "Small business invoice and quote PDF generator for service providers",
+            "score": 55,
+            "stars": 80,
+            "topics_json": '["invoice", "small-business"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=2)
+
+    assert [row["source_id"] for row in ranked] == ["invoice", "notes"]
+
+
+def test_vertical_report_downranks_framework_schedule_dashboards() -> None:
+    rows = [
+        {
+            "source_id": "laravel",
+            "title": "demo/laravel-schedule-dashboard",
+            "description": "Manage your Laravel schedule from a web dashboard",
+            "score": 95,
+            "stars": 20000,
+            "topics_json": '["laravel", "scheduler", "dashboard"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+        {
+            "source_id": "salon",
+            "title": "demo/salon-booking",
+            "description": "Salon appointment booking and staff scheduling system for local service businesses",
+            "score": 55,
+            "stars": 80,
+            "topics_json": '["salon", "appointment-booking"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=2)
+
+    assert [row["source_id"] for row in ranked] == ["salon", "laravel"]
+
+
+def test_vertical_report_downranks_lists_and_helper_libraries() -> None:
+    rows = [
+        {
+            "source_id": "awesome",
+            "title": "demo/awesome-billing",
+            "description": "Awesome billing and payments knowledge list for cloud platforms",
+            "score": 95,
+            "stars": 20000,
+            "topics_json": '["awesome-list", "billing", "payments"]',
+            "packaging_signals_json": '["integration"]',
+        },
+        {
+            "source_id": "library",
+            "title": "demo/crm-helper",
+            "description": "CRM helper library and code examples for API developers",
+            "score": 90,
+            "stars": 12000,
+            "topics_json": '["crm", "api", "javascript"]',
+            "packaging_signals_json": '["api"]',
+        },
+        {
+            "source_id": "billing",
+            "title": "demo/subscription-billing",
+            "description": "Subscription management and billing system for small businesses",
+            "score": 55,
+            "stars": 80,
+            "topics_json": '["billing", "subscription-management"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=3)
+
+    assert [row["source_id"] for row in ranked] == ["billing", "awesome", "library"]
+
+
 def _row(source_id: str, category: str, score: int) -> dict[str, object]:
     return {
         "source_id": source_id,
