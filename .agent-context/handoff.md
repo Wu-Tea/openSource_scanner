@@ -27,11 +27,12 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Latest focused vertical scan ran on 2026-05-19 across 28 GitHub search queries with 7-second spacing; it stored 184 observations around local services, booking, retail/POS/inventory, invoices, forms, events, membership, rentals, maintenance, tenant portals, and helpdesk/customer portals.
 - Local SQLite now contains 3985 unique non-dismissed opportunities after the focused vertical scan, a net increase of 159 from the prior baseline. New vertical buckets include Booking / Scheduling 34, Forms / Surveys / Documents 33, Inventory / Assets / Field Ops 31, Events / Membership 20, Healthcare / Clinic 14, CRM / Sales / Support 4, Finance / Billing 4, Real Estate / Property 4, and Restaurant / Hospitality 2.
 - Latest generated vertical report: `reports/2026-05-19.md` from `uv run oss-scan report --today --focus vertical --limit 160 --output-dir reports`.
+- Deep research direction memo is saved at `docs/research/2026-05-19-deep-research-direction.md`. It reframes the product around service-led workflow businesses with existing budget, dirty repeated work, and high error cost.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Use vertical-focus reports as the default for this product direction. Shortlist and write memos for packaging-friendly small-business/domain candidates such as `TDuckCloud/tduck-survey-form`, `dayschedule/dayschedule-widget`, `open-condo-software/condo`, `billabear/billabear`, `jfqd/redmine_helpdesk`, `tastyigniter/TastyIgniter`, `angelodlfrtr/go-invoice-generator`, `microrealestate/microrealestate`, `bigprof-software/online-rental-property-manager`, `ivan-my-wong/flowclass`, `ChurchCRM/CRM`, `yuriycto/AcumaticaInventoryScanner`, `georgewangchn/VetVoice`, `rubyforgood/casa`, `GTBitsOfGood/VolunTrack`, and `ChanMeng666/automotive-repair-management-system`. Next product feature should add a risk/safety layer for platform-automation bots and optionally add a `--min-vertical-score` report filter.
+Use vertical-focus reports as the default, but evolve them toward workflow-family scoring. Highest-priority workflow families from the research memo: RFP/proposal/security-questionnaire response, agency/client-delivery OS, permit/license/inspection renewal tracking, vendor compliance/COI/credential tracking, accounting/tax client portals, chargeback evidence builders, construction permit/submittal workflows, and niche professional-service client portals. Next product feature should add workflow-family taxonomy and a risk/safety layer for platform-automation bots, demo repos, libraries-only repos, and unknown-license repos.
 
 ## Blockers
 
@@ -49,6 +50,7 @@ Use vertical-focus reports as the default for this product direction. Shortlist 
 ## Files To Read First
 
 - `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`
+- `docs/research/2026-05-19-deep-research-direction.md`
 - `.agent-context/session-log.md`
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
 - `.agent-context/archive/session-log-2026-05-15-pre-compaction.md` only if deeper pre-compaction detail is needed

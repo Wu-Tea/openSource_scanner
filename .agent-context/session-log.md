@@ -284,3 +284,24 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Add a `--min-vertical-score` or `--vertical-only` filter so reports can exclude weak vertical matches entirely.
 - Generate memos for 8-12 top vertical candidates, starting with document/invoice generation, volunteer management, inventory/repair, booking, property management, and clinic/vet workflows.
+
+### 2026-05-19 - Deep research report synthesis
+
+**Goal:** Study `D:\Downloads\deep-research-report (11).md` and turn it into project direction for future scanning.
+
+**What changed:**
+
+- Added `docs/research/2026-05-19-deep-research-direction.md`.
+- Captured the report's central filter: prioritize workflows with existing budget, dirty repeated work, high error cost, and a service-to-software path.
+- Translated the report into scanner implications: new workflow families, search query packs, scoring signals, downranking rules, and next product changes.
+
+**Direction captured:**
+
+- Highest-priority workflow families are RFP/proposal/security-questionnaire response, agency/client-delivery OS, permit/license/inspection renewal tracking, vendor compliance/COI/credential tracking, accounting/tax client portals, trust center lite, chargeback evidence builders, construction permit/submittal workflows, and niche professional-service client portals.
+- The scanner should evolve from broad vertical nouns toward workflow-family scoring that asks who pays, what manual process is replaced, and what error is costly.
+
+**Follow-up:**
+
+- Implement workflow-family taxonomy and `--focus workflow`.
+- Add score reasons for workflow signals such as renewal, expiration, owner approval, document chase, evidence packet, and export format.
+- Add risk filtering for platform automation, demo/sample repos, library-only repos, and unknown-license repos before memo generation.
