@@ -189,6 +189,75 @@ def test_report_command_defaults_to_balanced_category_output(tmp_path: Path, mon
     assert report_text.index("demo/kube-deploy") < report_text.index("demo/agent-two")
 
 
+def test_report_command_vertical_focus_prioritizes_business_pain_points(
+    tmp_path: Path, monkeypatch
+) -> None:
+    db_path = tmp_path / "scanner.sqlite"
+    monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))
+    store = OpportunityStore(db_path)
+    store.initialize()
+    seen_at = datetime(2026, 5, 19, 9, 30, tzinfo=UTC)
+    rows = [
+        (
+            "framework",
+            "demo/react-starter",
+            "React web framework starter with components and frontend templates",
+            ["react", "frontend", "web-framework"],
+            90,
+            50000,
+        ),
+        (
+            "restaurant",
+            "demo/restaurant-booking",
+            "Restaurant online ordering, table reservation, menu, billing, and staff dashboard",
+            ["restaurant-management", "booking-system"],
+            61,
+            80,
+        ),
+    ]
+    for source_id, title, description, topics, score, stars in rows:
+        store.upsert_opportunity(
+            Opportunity(
+                source="github",
+                source_id=source_id,
+                title=title,
+                url=f"https://github.com/{title}",
+                description=description,
+                project=title,
+                language="TypeScript",
+                topics=topics,
+                stars=stars,
+                forks=10,
+                open_issues=3,
+                pushed_at=datetime(2026, 5, 18, 12, 30, tzinfo=UTC),
+                archived=False,
+                license_spdx_id="mit",
+                packaging_signals=["template", "dashboard"],
+            ),
+            ScoreBreakdown(total=score, reasons=["test score"], penalties=[]),
+            seen_at=seen_at,
+        )
+    output_dir = tmp_path / "reports"
+
+    result = runner.invoke(
+        cli.app,
+        [
+            "report",
+            "--focus",
+            "vertical",
+            "--limit",
+            "2",
+            "--output-dir",
+            str(output_dir),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    report_text = next(output_dir.glob("*.md")).read_text(encoding="utf-8")
+    assert report_text.index("demo/restaurant-booking") < report_text.index("demo/react-starter")
+    assert "Category: Vertical: Restaurant / Hospitality" in report_text
+
+
 def test_shortlist_command_writes_feedback_pipeline_report(tmp_path: Path, monkeypatch) -> None:
     db_path = tmp_path / "scanner.sqlite"
     monkeypatch.setenv("OSS_SCANNER_DB", str(db_path))

@@ -19,7 +19,7 @@ from open_source_scanner.report import write_report
 from open_source_scanner.scoring import score_opportunity
 from open_source_scanner.shortlist import write_shortlist
 from open_source_scanner.storage import OpportunityStore
-from open_source_scanner.taxonomy import balance_rows_by_category
+from open_source_scanner.taxonomy import balance_rows_by_category, rank_rows_for_vertical_report
 
 
 app = typer.Typer(help="Scan open-source projects for packaging opportunities.")
@@ -137,6 +137,10 @@ def scan(
 def report(
     today: bool = typer.Option(False, help="Use the current UTC date for the report filename."),
     limit: int = typer.Option(20, min=1, help="Number of ranked opportunities to include."),
+    focus: str = typer.Option(
+        "balanced",
+        help="Report focus: balanced for general category balance, vertical for business pain points, or global for pure score rank.",
+    ),
     balanced: bool = typer.Option(
         True,
         "--balanced/--global",
@@ -151,9 +155,21 @@ def report(
 ) -> None:
     report_date = datetime.now(tz=UTC).date().isoformat()
     store = _store()
-    candidate_limit = max(limit, 500) if balanced else limit
+    normalized_focus = focus.strip().lower()
+    if normalized_focus not in {"balanced", "vertical", "global"}:
+        console.print("[red]Invalid report focus. Use one of: balanced, vertical, global[/red]")
+        raise typer.Exit(code=1)
+
+    if normalized_focus == "global":
+        balanced = False
+
+    candidate_limit = max(limit * 50, 5000) if normalized_focus == "vertical" else max(limit, 500)
+    if not balanced and normalized_focus != "vertical":
+        candidate_limit = limit
     rows = store.list_ranked(limit=candidate_limit)
-    if balanced:
+    if normalized_focus == "vertical":
+        rows = rank_rows_for_vertical_report(rows, limit=limit)
+    elif balanced:
         rows = balance_rows_by_category(rows, limit=limit, per_category=per_category)
     output_path = write_report(rows, report_date=report_date, output_dir=output_dir)
     console.print(f"[green]Report written to {output_path}[/green]")

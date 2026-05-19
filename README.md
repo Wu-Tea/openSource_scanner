@@ -39,7 +39,13 @@ ranking, or tune the first pass with `--per-category`.
 uv run oss-scan report --today --limit 30
 uv run oss-scan report --today --limit 30 --per-category 2
 uv run oss-scan report --today --limit 30 --global
+uv run oss-scan report --today --focus vertical --limit 50
 ```
+
+Use `--focus vertical` when looking for small business workflows or industry
+pain points. It boosts explicit domains such as restaurants, bookings, forms,
+CRM, property management, clinics, education, finance, events, and helpdesk,
+while downranking generic web frameworks and component libraries.
 
 ## Safety
 

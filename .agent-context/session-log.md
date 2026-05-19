@@ -239,3 +239,48 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Implement a vertical report mode or scoring overlay that prioritizes explicit target users and domain workflows over generic technical popularity.
 - Generate memos for a small set of vertical candidates after adding the overlay.
+
+### 2026-05-19 - Vertical report mode and focused small-tool scan
+
+**Goal:** Continue scanning with lower weight for generic web development frameworks and higher visibility for vertical business workflows or small tools that solve narrow operational pain points.
+
+**What changed:**
+
+- Added `--focus vertical` to `oss-scan report`.
+- Added a vertical classifier and ranking overlay that boosts explicit business/domain workflows such as appointments, forms, invoices, rentals, volunteer management, property management, clinics, education, inventory, POS, field ops, and helpdesk/customer portals.
+- Added penalties for generic web/app frameworks, component libraries, generic AI/infra/developer-tool repos, and false-positive terms such as event buses or generic framework routing when no real business workflow is present.
+- Updated README usage examples for vertical opportunity reports.
+
+**Verification:**
+
+- TDD red check: targeted taxonomy/report tests initially failed because `classify_vertical_row` did not exist.
+- `uv run pytest tests/test_taxonomy.py tests/test_cli.py::test_report_command_vertical_focus_prioritizes_business_pain_points -q` -> 7 passed after implementation.
+- Added a regression test for generic event-framework false positives.
+- `uv run pytest -q` -> 61 passed.
+- `uv run ruff check src tests` -> all checks passed.
+
+**What ran:**
+
+- Baseline before focused scan: 3826 unique non-dismissed opportunities.
+- Round 1: local-service queries covering salon/barber/spa/clinic/dental/tutor/class/daycare booking and management. It stopped at the configured GitHub rate-limit floor after the daycare query.
+- Round 2: retail/finance queries covering retail POS, barcode inventory, warehouse inventory, rental management, equipment rental, repair shop management, invoices, receipt OCR, quote generation, and small-business accounting.
+- Round 3: forms/service queries covering self-hosted forms and surveys, document and contract generation, event ticketing, membership directories, volunteer management, maintenance requests, tenant portals, and customer portals/helpdesk.
+- Total observations: 184 across 28 GitHub search requests with 7-second spacing.
+- Regenerated vertical report: `uv run oss-scan report --today --focus vertical --limit 160 --output-dir reports`, output `reports/2026-05-19.md`.
+
+**Observed data after scan:**
+
+- Local SQLite contains 3985 unique non-dismissed opportunities, a net increase of 159.
+- New vertical buckets: Booking / Scheduling 34, Forms / Surveys / Documents 33, Inventory / Assets / Field Ops 31, Events / Membership 20, Healthcare / Clinic 14, Other 13, CRM / Sales / Support 4, Finance / Billing 4, Real Estate / Property 4, Restaurant / Hospitality 2.
+- Promising newly surfaced candidates include `akira-io/laravel-pdf-invoices`, `angelodlfrtr/go-invoice-generator`, `H1D/easypdf-lite`, `Anmol-Baranwal/form-builder`, `ICodingStack/ContractSpark`, `rubyforgood/casa`, `GTBitsOfGood/VolunTrack`, `aerogear/OpenVolunteerPlatform`, `vereinfacht/vereinfacht`, `yuriycto/AcumaticaInventoryScanner`, `ChanMeng666/automotive-repair-management-system`, `omarbadrani/TunisiashopERP---Complete-Retail-Management-System`, `nbt4/rentalcore`, `BEKO2210/Prepper_Log`, `elghaied/payload-reserve`, `OthmanAdi/BarbersBuddies_Onlineshop_maker`, `ayyub-humeid/real-estate-system`, `MohamedShiras/Serendib`, and `UCDS/health4all_v3`.
+
+**Candidate-quality notes:**
+
+- The vertical overlay materially reduces generic web framework dominance, but the classifier is still heuristic and can misread generic terms such as "event" or "form" unless guarded by target-user terms.
+- Best near-term packaging lanes are document/invoice generation, form builders, volunteer/membership management, inventory/POS/repair shop management, rentals/tenant portals, appointment booking, and niche healthcare/clinic tools.
+- Repos with missing or restrictive licenses, demo/sample positioning, or unclear maintenance should be filtered before memo generation.
+
+**Follow-up:**
+
+- Add a `--min-vertical-score` or `--vertical-only` filter so reports can exclude weak vertical matches entirely.
+- Generate memos for 8-12 top vertical candidates, starting with document/invoice generation, volunteer management, inventory/repair, booking, property management, and clinic/vet workflows.

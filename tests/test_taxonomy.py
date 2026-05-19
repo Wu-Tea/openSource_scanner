@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from open_source_scanner.taxonomy import balance_rows_by_category, classify_row
+from open_source_scanner.taxonomy import (
+    balance_rows_by_category,
+    classify_row,
+    classify_vertical_row,
+    rank_rows_for_vertical_report,
+)
 
 
 def test_classify_row_detects_ai_agent_projects() -> None:
@@ -53,6 +58,72 @@ def test_balance_rows_by_category_prioritizes_category_variety() -> None:
         "security-1",
         "ai-2",
     ]
+
+
+def test_classify_vertical_row_detects_specific_business_workflow() -> None:
+    row = {
+        "title": "demo/restaurant-booking",
+        "description": "Restaurant online ordering, table reservation, menu, billing, and staff dashboard",
+        "topics_json": '["restaurant-management", "booking-system"]',
+        "packaging_signals_json": '["dashboard"]',
+    }
+
+    assert classify_vertical_row(row) == "Restaurant / Hospitality"
+
+
+def test_vertical_report_ranking_downranks_generic_web_frameworks() -> None:
+    rows = [
+        {
+            "source_id": "framework",
+            "title": "demo/react-starter",
+            "description": "React web framework starter with components and frontend templates",
+            "score": 90,
+            "stars": 50000,
+            "topics_json": '["react", "frontend", "web-framework"]',
+            "packaging_signals_json": '["template"]',
+        },
+        {
+            "source_id": "restaurant",
+            "title": "demo/restaurant-booking",
+            "description": "Restaurant online ordering, table reservation, menu, billing, and staff dashboard",
+            "score": 61,
+            "stars": 80,
+            "topics_json": '["restaurant-management", "booking-system"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=2)
+
+    assert [row["source_id"] for row in ranked] == ["restaurant", "framework"]
+    assert ranked[0]["category"] == "Vertical: Restaurant / Hospitality"
+
+
+def test_vertical_report_downranks_frameworks_with_generic_event_terms() -> None:
+    rows = [
+        {
+            "source_id": "nestjs",
+            "title": "demo/nestjs-modules",
+            "description": "A framework collection of modules and utilities for event-driven API developers",
+            "score": 95,
+            "stars": 20000,
+            "topics_json": '["nestjs", "framework", "developer-tools"]',
+            "packaging_signals_json": '["plugin"]',
+        },
+        {
+            "source_id": "volunteer",
+            "title": "demo/volunteer-manager",
+            "description": "Volunteer and event management platform for local nonprofit organizations",
+            "score": 55,
+            "stars": 80,
+            "topics_json": '["volunteer-management", "event-management"]',
+            "packaging_signals_json": '["dashboard"]',
+        },
+    ]
+
+    ranked = rank_rows_for_vertical_report(rows, limit=2)
+
+    assert [row["source_id"] for row in ranked] == ["volunteer", "nestjs"]
 
 
 def _row(source_id: str, category: str, score: int) -> dict[str, object]:
