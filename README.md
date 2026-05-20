@@ -9,7 +9,8 @@ solo-developer-friendly 2C entertainment, companion, toy, and lightweight
 consumer products. The existing GitHub/B2B/vertical workflow modes are still
 useful as secondary lenses, but the next scanner iteration should prioritize
 consumer-hit signals and non-GitHub sources such as Steam, itch.io, Product Hunt,
-Reddit, and short-video/social communities.
+Reddit, and short-video/social communities. ERP-related applications are excluded
+from default scans.
 
 ## First workflow
 

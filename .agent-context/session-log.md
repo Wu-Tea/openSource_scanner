@@ -397,3 +397,58 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - Add a `consumer` / `2c` report focus.
 - Add consumer-hit taxonomy and scoring.
 - Add query packs and future collectors for Steam, itch.io, Product Hunt, Reddit, Xiaohongshu/TikTok-style social signals, and GitHub implementation references.
+
+### 2026-05-20 - Consumer scan with ERP exclusion
+
+**Goal:** Re-run several scans using the solo-developer 2C direction, while banning ERP-related applications.
+
+**What changed:**
+
+- Added accepted decision `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`.
+- Added three consumer scan presets:
+  - `config/consumer-round-1` for desktop companions, desktop pets, focus buddies, idle/incremental/clicker/cozy games.
+  - `config/consumer-round-2` for browser games, web games, game jams, meme generators, avatar generators, character creators, and pixel art tools.
+  - `config/consumer-round-3` for visual novels, horror, typing, rhythm, roguelike/browser, survivor-like, pomodoro, and cute games.
+- Generated local report `reports/2026-05-20-consumer-scan.md`.
+
+**What ran:**
+
+- Round 1 initially returned 0 rows because bare negative terms such as `-erp -odoo` over-constrained GitHub repository search.
+- Query syntax was corrected to topic-level exclusions such as `-topic:erp`, with result-level ERP/B2B text filtering.
+- Round 1 stored 106 observations.
+- Round 2 stored 92 observations.
+- Round 3 stored 95 observations.
+- Total local consumer DB rows: 293 unique rows in ignored local DB `data/consumer-2026-05-20.sqlite`.
+- Result-level word-boundary ERP/B2B filter removed 1 row; 292 non-ERP rows were scored.
+
+**Observed buckets:**
+
+- Small game: 110 rows.
+- Desktop companion: 88 rows.
+- Creator toy: 60 rows.
+- Idle / incremental: 18 rows.
+- Browser game: 17 rows.
+- Distribution signal: 12 rows.
+
+**Promising candidates:**
+
+- `Shellishack/vibebud` - floating AI virtual pets for Codex, Claude Code, and desktop/mobile.
+- `scorzy/IdleAnt` - small MIT incremental idle game.
+- `georapbox/meme-generator` - PWA meme generator.
+- `Auwuua/DockCat` - macOS dock desktop companion cat.
+- `M-SRIKAR-VARDHAN/MAX-Desktop-Companion` - Windows desktop companion with pixel art.
+- `Shpigford/society-fail` - browser-based incremental post-apocalyptic clicker.
+- `entibo/taipingu` - Japanese typing web game.
+- `cwtickle/danoniplus` - web-based rhythm game.
+- `MemeCrafters/meme-generator` - Chinese meme generator ecosystem.
+
+**External signal check:**
+
+- Steam and itch.io searches showed active consumer demand signals around desktop pets, bottom-of-screen idle games, and browser incremental games.
+- Examples include `Pocket Waifu: Desktop Pet`, `Weyrdlets`, `Idle Crush Factory`, `Desktop Driller`, `Idle Desktop Pet Shop`, `CRITTOP`, and recent itch.io browser idle games such as `Ensis IDLE`, `Emerald Rush`, and `Petal by Petal`.
+
+**Follow-up:**
+
+- Add first-class `--focus consumer` report ranking instead of ad hoc post-processing.
+- Add committed ERP/B2B exclusion config and tests so substring false positives such as `pos` inside unrelated words do not remove consumer game rows.
+- Expand beyond GitHub with Steam/itch/Product Hunt/Reddit/Xiaohongshu collectors or manual import.

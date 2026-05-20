@@ -33,11 +33,14 @@ Build `openSource_scanner`: a local-first opportunity radar for finding solo-dev
 - Fragmented waiting-time games memo is saved at `docs/research/2026-05-20-fragmented-waiting-time-games.md`. It records `Desktop Expedition Sticker RPG` as a separate side-experiment track for AI-era delegate/wait/review work rhythms, not a replacement for the B2B workflow scanner.
 - User corrected the strategic target on 2026-05-20: as a solo developer, heavy B2B workflow opportunities are not the best default. The new default should prioritize 2C entertainment, companion products, browser toys, creator toys, and consumer micro-products with small-hit potential.
 - Solo-developer 2C pivot memo is saved at `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`; accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`.
+- User banned ERP-related applications from default scans on 2026-05-20. Accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`.
+- Latest consumer scan ran on 2026-05-20 using three GitHub query rounds with ERP topic exclusions: desktop companion/idle, browser toy/generator, and lightweight game genres. It stored 293 unique rows in ignored local DB `data/consumer-2026-05-20.sqlite`; result-level word-boundary ERP/B2B filtering left 292 scored non-ERP rows. Generated local report: `reports/2026-05-20-consumer-scan.md`.
+- Best candidates from the consumer scan include `Shellishack/vibebud`, `scorzy/IdleAnt`, `georapbox/meme-generator`, `Auwuua/DockCat`, `M-SRIKAR-VARDHAN/MAX-Desktop-Companion`, `Shpigford/society-fail`, `entibo/taipingu`, `cwtickle/danoniplus`, and `MemeCrafters/meme-generator`.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Pivot the default scanner direction to solo-developer-friendly 2C opportunities. Next product feature should add a `consumer` / `2c` focus mode, consumer-hit taxonomy, and query packs for desktop companions, cozy idle/incremental games, browser toys, meme/generator tools, creator toys, avatar/personalization tools, focus buddies, and low-scope narrative/horror/puzzle experiments. B2B workflow-family scoring should remain available as a secondary lens, not the default mainline.
+Pivot the default scanner direction to solo-developer-friendly 2C opportunities. Next product feature should add a `consumer` / `2c` focus mode, consumer-hit taxonomy, query packs for desktop companions, cozy idle/incremental games, browser toys, meme/generator tools, creator toys, avatar/personalization tools, focus buddies, and low-scope narrative/horror/puzzle experiments, plus a first-class exclusion list for ERP/B2B terms. B2B workflow-family scoring should remain available as a secondary lens, not the default mainline.
 
 ## Blockers
 
@@ -52,6 +55,7 @@ Pivot the default scanner direction to solo-developer-friendly 2C opportunities.
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
 - `.agent-context/decisions/DEC-2026-05-16-001-balanced-category-reports.md`
 - `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`
+- `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`
 
 ## Files To Read First
 

@@ -1,0 +1,26 @@
+github:
+  enabled: true
+  max_results: 30
+  repository_queries:
+    - '"visual novel" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"horror game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"typing game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"rhythm game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - 'roguelike browser stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - 'survivors game stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"pomodoro game" stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"cute game" stars:>10 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+  target_keywords:
+    - visual novel
+    - horror game
+    - typing game
+    - rhythm game
+    - roguelike
+    - survivors
+    - pomodoro game
+    - cute game
+safety:
+  max_search_requests_per_run: 8
+  min_seconds_between_requests: 7.0
+  rate_limit_remaining_floor: 1
+  stop_on_rate_limit: true

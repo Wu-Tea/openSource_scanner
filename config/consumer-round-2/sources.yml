@@ -1,0 +1,26 @@
+github:
+  enabled: true
+  max_results: 30
+  repository_queries:
+    - '"browser game" stars:>50 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"web game" stars:>100 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"game jam" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"meme generator" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"avatar generator" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"character creator" stars:>10 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"pixel art editor" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"image generator" meme stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+  target_keywords:
+    - browser game
+    - web game
+    - game jam
+    - meme generator
+    - avatar generator
+    - character creator
+    - pixel art editor
+    - image generator
+safety:
+  max_search_requests_per_run: 8
+  min_seconds_between_requests: 7.0
+  rate_limit_remaining_floor: 1
+  stop_on_rate_limit: true

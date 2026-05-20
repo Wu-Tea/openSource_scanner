@@ -1,0 +1,26 @@
+github:
+  enabled: true
+  max_results: 30
+  repository_queries:
+    - '"desktop pet" stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"desktop companion" stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"focus buddy" stars:>1 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"virtual pet" stars:>10 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"idle game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"incremental game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"clicker game" stars:>20 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+    - '"cozy game" stars:>5 pushed:>2025-01-01 -topic:erp -topic:odoo -topic:sap -topic:accounting -topic:crm -topic:inventory'
+  target_keywords:
+    - desktop pet
+    - desktop companion
+    - focus buddy
+    - virtual pet
+    - idle game
+    - incremental game
+    - clicker game
+    - cozy game
+safety:
+  max_search_requests_per_run: 8
+  min_seconds_between_requests: 7.0
+  rate_limit_remaining_floor: 1
+  stop_on_rate_limit: true
