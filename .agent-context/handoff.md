@@ -30,11 +30,12 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Deep research direction memo is saved at `docs/research/2026-05-19-deep-research-direction.md`. It reframes the product around service-led workflow businesses with existing budget, dirty repeated work, and high error cost.
 - Latest workflow-family scan ran on 2026-05-19 across 55 GitHub search requests with 7-second spacing. It added 430 observations and 396 net-new unique opportunities, bringing local SQLite to 4381 unique non-dismissed opportunities.
 - Workflow scan candidates worth memo review include `kutcode/trustreply`, `BuildSphere-dev/OPTIBIDS`, `JakeLeoDev/proposit`, `monte-carlo-data/transparent-trust`, `FlowEngine-cloud/flowengine`, `Vibra-Labs/Atrium`, `parthg-cmyk/Vendor-Portal-Purchase-Automation-System`, `AmanuelZ/govstack-bb-registration-et`, `amohamed369/perm`, `auxilium-software/auxilium-portal`, and `UnicisTech/unicis-platform-ce`.
+- Fragmented waiting-time games memo is saved at `docs/research/2026-05-20-fragmented-waiting-time-games.md`. It records `Desktop Expedition Sticker RPG` as a separate side-experiment track for AI-era delegate/wait/review work rhythms, not a replacement for the B2B workflow scanner.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Use vertical-focus reports as the default, but evolve them toward workflow-family scoring. Highest-priority workflow families from the research memo: RFP/proposal/security-questionnaire response, agency/client-delivery OS, permit/license/inspection renewal tracking, vendor compliance/COI/credential tracking, accounting/tax client portals, chargeback evidence builders, construction permit/submittal workflows, and niche professional-service client portals. Next product feature should add workflow-family taxonomy and a risk/safety layer for platform-automation bots, demo repos, libraries-only repos, and unknown-license repos.
+Use vertical-focus reports as the default, but evolve them toward workflow-family scoring. Highest-priority workflow families from the research memo: RFP/proposal/security-questionnaire response, agency/client-delivery OS, permit/license/inspection renewal tracking, vendor compliance/COI/credential tracking, accounting/tax client portals, chargeback evidence builders, construction permit/submittal workflows, and niche professional-service client portals. Next product feature should add workflow-family taxonomy and a risk/safety layer for platform-automation bots, demo repos, libraries-only repos, and unknown-license repos. If the waiting-time game direction is pursued, start it as a separate prototype/research lane and validate co-working retention before larger commitment.
 
 ## Blockers
 

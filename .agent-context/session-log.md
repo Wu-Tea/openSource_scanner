@@ -353,3 +353,25 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - Implement workflow-family taxonomy and `--focus workflow`; the scan results provide test fixtures.
 - Add risk labels for library-only, SDK/API-client, demo/sample, restrictive-license, platform automation, and speculative AI agent projects.
 - Write memos for `trustreply`, `OPTIBIDS`, `proposit`, `transparent-trust`, `flowengine`, `Atrium`, `PERM Tracker`, and one vendor-onboarding candidate.
+
+### 2026-05-20 - Fragmented waiting-time games report synthesis
+
+**Goal:** Study `D:\Downloads\deep-research-report (12).md` and decide how it should influence the opportunity radar.
+
+**What changed:**
+
+- Added `docs/research/2026-05-20-fragmented-waiting-time-games.md`.
+- Captured the report's thesis: AI-era delegate/wait/review loops create repeated fragmented waiting windows that may support a desktop-first passive-active game.
+- Recorded the recommended MVP direction: `Desktop Expedition Sticker RPG`, a Windows-first bottom-of-screen settlement and expedition game with passive progress and 30-90 second active choices.
+- Spot-checked current public examples and infrastructure signals: Codex-style background/parallel agent work, `Rusty's Retirement`, `Ropuka's Idle Island`, and `Desktop Survivors 98`.
+
+**Direction captured:**
+
+- Treat this as a side experiment, not a replacement for the main B2B workflow scanner.
+- Validate by co-working retention rather than raw playtime: D1/D7 return, background-open minutes, interventions per hour, and whether users keep it open during real work.
+- If pursued, use a separate prototype/research lane so game-specific signals do not dilute workflow-family scoring.
+
+**Follow-up:**
+
+- Keep workflow-family taxonomy and risk scoring as the mainline scanner work.
+- If the user chooses the game path, create a separate prototype repo and 30-day MVP plan for the Desktop Expedition Sticker RPG.
