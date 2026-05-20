@@ -4,6 +4,13 @@ Open-source opportunity radar for finding projects that can be packaged into use
 products, services, templates, integrations, deployment kits, localization work, or
 support offers.
 
+Strategic note: as of 2026-05-20, the default product target is shifting toward
+solo-developer-friendly 2C entertainment, companion, toy, and lightweight
+consumer products. The existing GitHub/B2B/vertical workflow modes are still
+useful as secondary lenses, but the next scanner iteration should prioritize
+consumer-hit signals and non-GitHub sources such as Steam, itch.io, Product Hunt,
+Reddit, and short-video/social communities.
+
 ## First workflow
 
 1. Scan GitHub for candidate repositories.

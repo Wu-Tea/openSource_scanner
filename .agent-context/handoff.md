@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-Build `openSource_scanner`: a local-first open-source opportunity radar that finds projects with packaging and monetization potential.
+Build `openSource_scanner`: a local-first opportunity radar for finding solo-developer-friendly 2C entertainment, companion, toy, and lightweight consumer products with packaging or small-hit potential.
 
 ## Current State
 
@@ -31,11 +31,13 @@ Build `openSource_scanner`: a local-first open-source opportunity radar that fin
 - Latest workflow-family scan ran on 2026-05-19 across 55 GitHub search requests with 7-second spacing. It added 430 observations and 396 net-new unique opportunities, bringing local SQLite to 4381 unique non-dismissed opportunities.
 - Workflow scan candidates worth memo review include `kutcode/trustreply`, `BuildSphere-dev/OPTIBIDS`, `JakeLeoDev/proposit`, `monte-carlo-data/transparent-trust`, `FlowEngine-cloud/flowengine`, `Vibra-Labs/Atrium`, `parthg-cmyk/Vendor-Portal-Purchase-Automation-System`, `AmanuelZ/govstack-bb-registration-et`, `amohamed369/perm`, `auxilium-software/auxilium-portal`, and `UnicisTech/unicis-platform-ce`.
 - Fragmented waiting-time games memo is saved at `docs/research/2026-05-20-fragmented-waiting-time-games.md`. It records `Desktop Expedition Sticker RPG` as a separate side-experiment track for AI-era delegate/wait/review work rhythms, not a replacement for the B2B workflow scanner.
+- User corrected the strategic target on 2026-05-20: as a solo developer, heavy B2B workflow opportunities are not the best default. The new default should prioritize 2C entertainment, companion products, browser toys, creator toys, and consumer micro-products with small-hit potential.
+- Solo-developer 2C pivot memo is saved at `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`; accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Use vertical-focus reports as the default, but evolve them toward workflow-family scoring. Highest-priority workflow families from the research memo: RFP/proposal/security-questionnaire response, agency/client-delivery OS, permit/license/inspection renewal tracking, vendor compliance/COI/credential tracking, accounting/tax client portals, chargeback evidence builders, construction permit/submittal workflows, and niche professional-service client portals. Next product feature should add workflow-family taxonomy and a risk/safety layer for platform-automation bots, demo repos, libraries-only repos, and unknown-license repos. If the waiting-time game direction is pursued, start it as a separate prototype/research lane and validate co-working retention before larger commitment.
+Pivot the default scanner direction to solo-developer-friendly 2C opportunities. Next product feature should add a `consumer` / `2c` focus mode, consumer-hit taxonomy, and query packs for desktop companions, cozy idle/incremental games, browser toys, meme/generator tools, creator toys, avatar/personalization tools, focus buddies, and low-scope narrative/horror/puzzle experiments. B2B workflow-family scoring should remain available as a secondary lens, not the default mainline.
 
 ## Blockers
 
@@ -49,10 +51,13 @@ Use vertical-focus reports as the default, but evolve them toward workflow-famil
 
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
 - `.agent-context/decisions/DEC-2026-05-16-001-balanced-category-reports.md`
+- `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`
 
 ## Files To Read First
 
 - `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`
+- `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`
+- `docs/research/2026-05-20-fragmented-waiting-time-games.md`
 - `docs/research/2026-05-19-deep-research-direction.md`
 - `.agent-context/session-log.md`
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`

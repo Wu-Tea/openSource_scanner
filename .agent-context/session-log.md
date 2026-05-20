@@ -375,3 +375,25 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Keep workflow-family taxonomy and risk scoring as the mainline scanner work.
 - If the user chooses the game path, create a separate prototype repo and 30-day MVP plan for the Desktop Expedition Sticker RPG.
+
+### 2026-05-20 - Solo-developer 2C target correction
+
+**Goal:** Correct the scanner's strategic target after user feedback that heavy B2B workflow opportunities are poorly matched to a solo developer.
+
+**What changed:**
+
+- Added `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`.
+- Added accepted decision `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`.
+- Updated `handoff.md` so future work treats 2C entertainment, companion products, browser toys, creator toys, and consumer micro-products as the default mainline.
+
+**Direction captured:**
+
+- The previous scans drifted because GitHub, stars, deployment keywords, workflow language, and vertical business nouns bias discovery toward B2B/SaaS/tooling.
+- For this user, the better default is solo-developer scope: fast prototypes, strong visual hook, shareability, product-led distribution, and small-hit potential.
+- The desktop waiting-time game thesis should be promoted from side experiment to the first 2C validation lane.
+
+**Follow-up:**
+
+- Add a `consumer` / `2c` report focus.
+- Add consumer-hit taxonomy and scoring.
+- Add query packs and future collectors for Steam, itch.io, Product Hunt, Reddit, Xiaohongshu/TikTok-style social signals, and GitHub implementation references.

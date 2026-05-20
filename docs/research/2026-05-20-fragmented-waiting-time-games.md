@@ -171,3 +171,9 @@ Week 4:
 ## Decision
 
 Record this as a worthwhile side experiment: "Desktop Expedition Sticker RPG / Passive-Active Hybrid Game." It is worth a 30-day prototype if we intentionally allocate a separate experiment lane. It should not interrupt the workflow-family scanner unless the user explicitly chooses to pursue a game prototype.
+
+## 2026-05-20 Update
+
+After user feedback, this direction should be reclassified. The user clarified that a solo developer is poorly matched to heavy B2B workflow opportunities and is better served by 2C entertainment or consumer small-hit products.
+
+Under that updated strategy, `Desktop Expedition Sticker RPG` is no longer merely a side experiment. It becomes the first recommended validation lane for the new solo-developer 2C mainline. See `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md` and `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`.
