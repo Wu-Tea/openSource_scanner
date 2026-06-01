@@ -36,11 +36,13 @@ Build `openSource_scanner`: a local-first opportunity radar for finding solo-dev
 - User banned ERP-related applications from default scans on 2026-05-20. Accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`.
 - Latest consumer scan ran on 2026-05-20 using three GitHub query rounds with ERP topic exclusions: desktop companion/idle, browser toy/generator, and lightweight game genres. It stored 293 unique rows in ignored local DB `data/consumer-2026-05-20.sqlite`; result-level word-boundary ERP/B2B filtering left 292 scored non-ERP rows. Generated local report: `reports/2026-05-20-consumer-scan.md`.
 - Best candidates from the consumer scan include `Shellishack/vibebud`, `scorzy/IdleAnt`, `georapbox/meme-generator`, `Auwuua/DockCat`, `M-SRIKAR-VARDHAN/MAX-Desktop-Companion`, `Shpigford/society-fail`, `entibo/taipingu`, `cwtickle/danoniplus`, and `MemeCrafters/meme-generator`.
+- Recurring automation `market-pain-radar` is ACTIVE. It runs about every 3 hours in `E:\AI\resp_scanner`, scans public communities and GitHub/open-source sources for market pain signals, excludes ERP/heavy enterprise software, and writes records under `records/market-pain/`.
+- Automation workflow documentation is saved at `docs/automation/market-pain-radar.md`; record directory index is `records/market-pain/index.md`.
 - User authorized autonomous ongoing development with worktree-based subagent delegation.
 
 ## Next Action
 
-Pivot the default scanner direction to solo-developer-friendly 2C opportunities. Next product feature should add a `consumer` / `2c` focus mode, consumer-hit taxonomy, query packs for desktop companions, cozy idle/incremental games, browser toys, meme/generator tools, creator toys, avatar/personalization tools, focus buddies, and low-scope narrative/horror/puzzle experiments, plus a first-class exclusion list for ERP/B2B terms. B2B workflow-family scoring should remain available as a secondary lens, not the default mainline.
+Monitor `records/market-pain/` as the new recurring research feed. Next product feature should add a `consumer` / `2c` focus mode, consumer-hit taxonomy, query packs for desktop companions, cozy idle/incremental games, browser toys, meme/generator tools, creator toys, avatar/personalization tools, focus buddies, and low-scope narrative/horror/puzzle experiments, plus a first-class exclusion list for ERP/B2B terms. B2B workflow-family scoring should remain available as a secondary lens, not the default mainline.
 
 ## Blockers
 
@@ -62,6 +64,7 @@ Pivot the default scanner direction to solo-developer-friendly 2C opportunities.
 - `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`
 - `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`
 - `docs/research/2026-05-20-fragmented-waiting-time-games.md`
+- `docs/automation/market-pain-radar.md`
 - `docs/research/2026-05-19-deep-research-direction.md`
 - `.agent-context/session-log.md`
 - `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`

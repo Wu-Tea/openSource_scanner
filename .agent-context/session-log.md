@@ -452,3 +452,30 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - Add first-class `--focus consumer` report ranking instead of ad hoc post-processing.
 - Add committed ERP/B2B exclusion config and tests so substring false positives such as `pos` inside unrelated words do not remove consumer game rows.
 - Expand beyond GitHub with Steam/itch/Product Hunt/Reddit/Xiaohongshu collectors or manual import.
+
+### 2026-06-01 - Recurring market-pain radar automation
+
+**Goal:** Create an automation that scans repositories and mainstream communities about every three hours, writes a local record, and maps market pain signals to useful GitHub/open-source tools.
+
+**What changed:**
+
+- Created ACTIVE Codex cron automation `market-pain-radar`.
+- Added `docs/automation/market-pain-radar.md`.
+- Added `records/market-pain/README.md`.
+- Added `records/market-pain/index.md`.
+
+**Automation behavior:**
+
+- Runs in `E:\AI\resp_scanner`.
+- Reads `.agent-context/handoff.md` and `docs/automation/market-pain-radar.md` first.
+- Writes each run to `records/market-pain/YYYY-MM-DD-HHMM.md` using Asia/Hong_Kong time.
+- Appends a short entry to `records/market-pain/index.md`.
+- Scans public community/search surfaces gently: V2EX, Hacker News, Reddit, Product Hunt, Indie Hackers, itch.io, Steam, Chrome Web Store, GitHub search/trending, and other public results when useful.
+- Starts from user pain signals, then searches GitHub/open-source tools that could help prototype solutions.
+- Excludes ERP, Odoo, SAP, accounting suites, invoicing, inventory/warehouse, CRM, POS, Salesforce, NetSuite, procurement, compliance-heavy enterprise workflows, sales-led B2B implementation, and generic AI wrappers by default.
+- Does not commit or push generated records automatically.
+
+**Follow-up:**
+
+- Review the first few generated records for signal quality.
+- If the record format works, implement first-class forum/source collectors and `--focus consumer` ranking inside the CLI.
