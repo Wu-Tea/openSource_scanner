@@ -544,3 +544,22 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 **Follow-up:**
 
 - Implement `opportunity-judge`, `bet-selector`, experiment planning, and revenue review before recreating recurring automation.
+
+### 2026-06-01 - Revenue Pipeline design prepared without subagents
+
+**Goal:** Turn the Revenue Pipeline direction into implementation-ready design material while keeping all automations/subagents off.
+
+**What changed:**
+
+- Verified no `$CODEX_HOME\automations` directory was present.
+- Did not spawn any subagents.
+- Wrote `docs/superpowers/specs/2026-06-01-revenue-pipeline-design.md`.
+- Wrote `docs/revenue-pipeline/2026-06-01-spark-implementation-blueprint.md`.
+- Wrote `docs/revenue-pipeline/2026-06-01-design-review.md`.
+
+**Design summary:**
+
+- Keep existing GitHub scanner as an input/tool-accelerator layer.
+- Add evidence, pain signal, tool match, candidate, score, bet, experiment, and review models.
+- Force the pipeline to select one active revenue bet before generating experiment artifacts.
+- Keep recurring automation disabled until this end-to-end pipeline exists.
