@@ -505,3 +505,23 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - User reminded that the workspace is Windows. Future commands, scripts, and library choices should use Windows/PowerShell-compatible syntax by default.
 - Avoid Unix-only heredocs such as `python <<'PY'`; use PowerShell here-strings, checked-in scripts, or native PowerShell commands.
+
+### 2026-06-01 - Market-pain automation deleted pending revenue pipeline
+
+**Goal:** Record that the standalone scan-record automation should not run until the judgment/execution pipeline exists.
+
+**What changed:**
+
+- User deleted the `market-pain-radar` automation.
+- Local automation inspection showed no `$CODEX_HOME\automations` directory.
+- Handoff updated so future sessions do not assume `market-pain-radar` is active.
+
+**Reasoning:**
+
+- The old automation produced research records but did not yet convert them into a chosen revenue bet or execution plan.
+- Recreating automation should wait until the pipeline includes `opportunity-judge`, `bet-selector`, experiment planning, and revenue review.
+
+**Follow-up:**
+
+- Implement the revenue pipeline first.
+- Recreate automation only after it can produce judgment and action outputs, not just market-pain Markdown records.
