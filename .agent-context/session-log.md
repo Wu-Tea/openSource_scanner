@@ -563,3 +563,13 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 - Add evidence, pain signal, tool match, candidate, score, bet, experiment, and review models.
 - Force the pipeline to select one active revenue bet before generating experiment artifacts.
 - Keep recurring automation disabled until this end-to-end pipeline exists.
+
+### 2026-06-01 - Spark small-context TODO list added
+
+**Goal:** Make the Revenue Pipeline implementation easier for 5.3 Spark by splitting the design into small, one-task-at-a-time blocks.
+
+**What changed:**
+
+- Added `docs/revenue-pipeline/2026-06-01-spark-todolist.md`.
+- The TODO file gives Spark global guardrails, per-task read scopes, write scopes, focused tests, stop points, and suggested commits.
+- The TODO explicitly keeps live collectors, recurring automation, and subagents out of V1.
