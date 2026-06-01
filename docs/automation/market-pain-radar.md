@@ -1,8 +1,12 @@
 # Market Pain Radar Automation
 
+## Status
+
+Inactive historical workflow. The user deleted the standalone `market-pain-radar` automation on 2026-06-01. Do not recreate it until the Revenue Pipeline can produce judgment and execution outputs, not just market-pain records.
+
 ## Overview
 
-This automation runs roughly every three hours and writes a local research record under `records/market-pain/`.
+When active, this automation would run roughly every three hours and write a local research record under `records/market-pain/`.
 
 The goal is to discover market pain signals from public communities first, then search GitHub and adjacent open-source sources for tools that could help solve or prototype around those pains.
 

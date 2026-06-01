@@ -2,55 +2,58 @@
 
 ## Current Objective
 
-Build `openSource_scanner`: a local-first opportunity radar for finding solo-developer-friendly 2C entertainment, companion, toy, and lightweight consumer products with packaging or small-hit potential.
+Build `openSource_scanner` into a local-first Revenue Pipeline for solo-developer-friendly 2C and lightweight consumer opportunities.
+
+The goal is not to produce more research documents by default. The system should turn public pain signals and repository/tool signals into one active revenue bet, with a clear experiment plan and execution path.
+
+## Product Model
+
+Think of the project as an opportunity engine:
+
+`public pain signals -> opportunity judge -> bet selector -> experiment plan -> execution artifacts -> revenue review`
+
+Existing GitHub scanning, community scanning, reports, memos, and market-pain records are input sources. They are not the final output.
+
+## Hard Defaults
+
+- Default target: solo-developer-friendly 2C/light consumer opportunities.
+- Preferred categories: entertainment, games, desktop companions, browser toys, creator toys, learning/focus/social/hobby micro-products, and playful utilities with small-hit potential.
+- Default non-goal: heavy B2B workflow products.
+- ERP and adjacent enterprise operations software are banned from default scans and recommendations.
+- Old B2B, workflow-family, vertical-business, and ERP-adjacent scan results are historical data only. Do not use them as the mainline unless the user explicitly reopens that direction.
+- `market-pain-radar` automation was deleted by the user. Do not recreate it until the Revenue Pipeline includes judgment and execution layers.
+- This workspace is Windows/PowerShell. Use Windows-compatible commands and libraries by default.
+- Do not store or commit secrets, cookies, tokens, private account data, or unnecessary personal data.
+- Do not auto-commit generated `records/` or `reports/` artifacts unless the user asks.
 
 ## Current State
 
-- Repository `https://github.com/Wu-Tea/openSource_scanner.git` has been cloned into `E:\AI\resp_scanner`.
-- Implementation plan is saved at `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`.
-- GitHub-only MVP is implemented on `main`: config, GitHub connector, normalizer, scoring, SQLite storage, Markdown reports, Typer CLI, README, and workflow docs.
-- Scheduled automation is implemented: GitHub Actions daily scan/report workflow and local Windows helper script.
-- Final local verification passed: `uv run pytest -v` -> 25 passed; `uv run ruff check src tests` -> all checks passed; PowerShell parser check for `scripts/run-daily-scan.ps1` passed.
-- First small real scan/report verification succeeded with `--limit 1`; generated data was inspected and then removed.
-- Opportunity memo workflow is implemented and verified: `oss-scan memo SOURCE SOURCE_ID` writes Chinese review memos under `memos/` and protects existing files unless `--force` is used.
-- Shortlist pipeline is implemented and verified: `oss-scan shortlist` groups `package`, `watch`, and `saved` opportunities into a Markdown pipeline view.
-- GitHub scan safety controls are implemented: per-run request budget, request spacing, rate-limit state capture, rate-limit floor stop, and fail-closed safety config validation.
-- Multi-category opportunity reporting is implemented and pushed in commit `f569eb9`: default GitHub queries now cover developer tools, infra, automation, DevOps, security, monitoring, data, analytics, CLI, and a capped AI query.
-- `oss-scan report` now defaults to balanced category output with `--balanced/--global` and `--per-category`; reports include `Category:` for each opportunity.
-- A scoring edge case is fixed: future-looking GitHub `pushed_at` timestamps are displayed as `pushed 0 days ago`, not negative days.
-- Latest multi-round scan ran on 2026-05-18 across 30 extra GitHub search queries with 7-second spacing; it stored 1904 observations across infra/devops, security/data, and product/business/media themes.
-- Latest generated report: `reports/2026-05-18.md` with `--limit 160 --per-category 8`.
-- Local SQLite now contains 2951 unique non-dismissed opportunities; category distribution is approximately Infra / DevOps 740, AI / Agents 628, Data / Analytics 406, Security / Privacy 294, Developer Tools 266, Web / App Frameworks 121, Productivity / Knowledge 117, Automation / Workflow 113, Other 93, Media / Design 89, Commerce / Growth 84.
-- Latest vertical-pain scan ran on 2026-05-18 across 39 extra GitHub search queries with 7-second spacing; it stored 1050 observations across small-business ops, industry/profession verticals, small pain-point tools, and everyday personal/team utilities.
-- Local SQLite now contains 3826 unique non-dismissed opportunities after the vertical scan, a net increase of 875 from the prior baseline. New vertical buckets: Forms & Docs 326, Business Ops 305, Events & Membership 56, Education 51, Finance & Billing 40, Healthcare 36, Real Estate 29, Knowledge & Notes 19, Support & Service 12.
-- Vertical-focus report mode is implemented and verified: `oss-scan report --focus vertical` boosts explicit small-business/domain workflows and downranks generic web frameworks, component libraries, AI, infra, developer-tool repos, awesome lists, helper libraries, examples, paper/survey repos, and other non-product false positives.
-- Latest focused vertical scan ran on 2026-05-19 across 28 GitHub search queries with 7-second spacing; it stored 184 observations around local services, booking, retail/POS/inventory, invoices, forms, events, membership, rentals, maintenance, tenant portals, and helpdesk/customer portals.
-- Local SQLite now contains 3985 unique non-dismissed opportunities after the focused vertical scan, a net increase of 159 from the prior baseline. New vertical buckets include Booking / Scheduling 34, Forms / Surveys / Documents 33, Inventory / Assets / Field Ops 31, Events / Membership 20, Healthcare / Clinic 14, CRM / Sales / Support 4, Finance / Billing 4, Real Estate / Property 4, and Restaurant / Hospitality 2.
-- Latest generated vertical report: `reports/2026-05-19.md` from `uv run oss-scan report --today --focus vertical --limit 160 --output-dir reports`.
-- Deep research direction memo is saved at `docs/research/2026-05-19-deep-research-direction.md`. It reframes the product around service-led workflow businesses with existing budget, dirty repeated work, and high error cost.
-- Latest workflow-family scan ran on 2026-05-19 across 55 GitHub search requests with 7-second spacing. It added 430 observations and 396 net-new unique opportunities, bringing local SQLite to 4381 unique non-dismissed opportunities.
-- Workflow scan candidates worth memo review include `kutcode/trustreply`, `BuildSphere-dev/OPTIBIDS`, `JakeLeoDev/proposit`, `monte-carlo-data/transparent-trust`, `FlowEngine-cloud/flowengine`, `Vibra-Labs/Atrium`, `parthg-cmyk/Vendor-Portal-Purchase-Automation-System`, `AmanuelZ/govstack-bb-registration-et`, `amohamed369/perm`, `auxilium-software/auxilium-portal`, and `UnicisTech/unicis-platform-ce`.
-- Fragmented waiting-time games memo is saved at `docs/research/2026-05-20-fragmented-waiting-time-games.md`. It records `Desktop Expedition Sticker RPG` as a separate side-experiment track for AI-era delegate/wait/review work rhythms, not a replacement for the B2B workflow scanner.
-- User corrected the strategic target on 2026-05-20: as a solo developer, heavy B2B workflow opportunities are not the best default. The new default should prioritize 2C entertainment, companion products, browser toys, creator toys, and consumer micro-products with small-hit potential.
-- Solo-developer 2C pivot memo is saved at `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`; accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`.
-- User banned ERP-related applications from default scans on 2026-05-20. Accepted decision is recorded in `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`.
-- Latest consumer scan ran on 2026-05-20 using three GitHub query rounds with ERP topic exclusions: desktop companion/idle, browser toy/generator, and lightweight game genres. It stored 293 unique rows in ignored local DB `data/consumer-2026-05-20.sqlite`; result-level word-boundary ERP/B2B filtering left 292 scored non-ERP rows. Generated local report: `reports/2026-05-20-consumer-scan.md`.
-- Best candidates from the consumer scan include `Shellishack/vibebud`, `scorzy/IdleAnt`, `georapbox/meme-generator`, `Auwuua/DockCat`, `M-SRIKAR-VARDHAN/MAX-Desktop-Companion`, `Shpigford/society-fail`, `entibo/taipingu`, `cwtickle/danoniplus`, and `MemeCrafters/meme-generator`.
-- Recurring automation `market-pain-radar` was deleted by the user after initial validation. Do not recreate it until the revenue pipeline is implemented; future automation should include judgment and execution layers, not only market-pain records.
-- Automation workflow documentation is saved at `docs/automation/market-pain-radar.md`; record directory index is `records/market-pain/index.md`.
-- User authorized autonomous ongoing development with worktree-based subagent delegation.
+- Repository `https://github.com/Wu-Tea/openSource_scanner.git` is cloned at `E:\AI\resp_scanner`.
+- The original GitHub-only MVP exists: config, GitHub connector, normalizer, scoring, SQLite storage, Markdown reports, Typer CLI, README, and workflow docs.
+- Safety controls exist for GitHub scanning: per-run request budget, request spacing, rate-limit state capture, rate-limit floor stop, and fail-closed safety config validation.
+- Existing report modes and configs include broad GitHub category scans, vertical-focus scans, and consumer scan presets.
+- Strategic direction changed on 2026-05-20 from heavy B2B/vertical workflows to solo-developer 2C/light consumer products.
+- ERP was banned from default scans on 2026-05-20.
+- A one-off market-pain radar smoke run on 2026-06-01 wrote `records/market-pain/2026-06-01-1829.md` and updated `records/market-pain/index.md`; these are generated local artifacts.
+- No active Codex automation should be assumed. The previous `market-pain-radar` automation was intentionally removed.
 
 ## Next Action
 
-Build the revenue pipeline before recreating any recurring automation. Next product feature should add `opportunity-judge`, `bet-selector`, and experiment planning so scans turn into a single active revenue bet, not just research documents. Keep `consumer` / `2c` focus, ERP/B2B exclusions, and Windows/PowerShell compatibility as hard defaults.
+Implement the Revenue Pipeline before recreating any recurring automation:
+
+1. `opportunity-judge`: read recent market-pain records and scan results, cluster pain signals, match useful repositories/tools, apply skeptic review, and score solo-dev revenue fit.
+2. `bet-selector`: choose one active bet instead of leaving a pile of candidates; write something like `bets/current.md`.
+3. `experiment-planner`: turn the selected bet into a 7-day or 14-day validation/execution plan with concrete build, distribution, and pricing tests.
+4. `revenue-reviewer`: periodically evaluate evidence and decide continue, kill, or pivot.
+5. Only after those pieces exist, recreate a recurring automation that produces judgment and action outputs, not just Markdown research notes.
 
 ## Blockers
 
-- None currently known.
+- None known.
 
 ## Active Questions
 
-- None requiring user input due current autonomous-development authorization.
+- None requiring user input. The user authorized autonomous planning and development, with worktree/subagent delegation when useful.
 
 ## Relevant Decisions
 
@@ -58,24 +61,25 @@ Build the revenue pipeline before recreating any recurring automation. Next prod
 - `.agent-context/decisions/DEC-2026-05-16-001-balanced-category-reports.md`
 - `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`
 - `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`
+- `.agent-context/decisions/DEC-2026-06-01-001-revenue-pipeline-mainline.md`
 
 ## Files To Read First
 
-- `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md`
+- `.agent-context/decisions/DEC-2026-06-01-001-revenue-pipeline-mainline.md`
+- `.agent-context/decisions/DEC-2026-05-20-001-solo-dev-2c-mainline.md`
+- `.agent-context/decisions/DEC-2026-05-20-002-ban-erp-from-default-scans.md`
 - `docs/research/2026-05-20-solo-dev-2c-entertainment-pivot.md`
 - `docs/research/2026-05-20-fragmented-waiting-time-games.md`
 - `docs/automation/market-pain-radar.md`
-- `docs/research/2026-05-19-deep-research-direction.md`
 - `.agent-context/session-log.md`
-- `.agent-context/decisions/DEC-2026-05-15-001-v1-github-local-mvp.md`
-- `.agent-context/archive/session-log-2026-05-15-pre-compaction.md` only if deeper pre-compaction detail is needed
 
-## Do Not Reopen Unless Needed
+## Historical Context
 
-- No archived context yet.
+- `docs/superpowers/plans/2026-05-15-open-source-opportunity-scanner.md` records the original GitHub scanner build plan.
+- `docs/research/2026-05-19-deep-research-direction.md` records the earlier service-led workflow/B2B direction. Treat it as superseded for default work.
+- `.agent-context/archive/session-log-2026-05-15-pre-compaction.md` is only needed for deeper pre-compaction history.
 
 ## Notes
 
-- Do not commit secrets such as `GITHUB_TOKEN`, cookies, API keys, or private user data.
-- The workspace is Windows/PowerShell. Use Windows-compatible commands and libraries by default; avoid Unix-only shell syntax such as `python <<'PY'`.
-- Re-check this handoff if repository state diverges from the plan or if a worktree merge fails.
+- If future sessions feel pulled toward B2B, ERP, or generic open-source ranking, re-read `Current Objective`, `Hard Defaults`, and `DEC-2026-06-01-001-revenue-pipeline-mainline.md`.
+- If repository state diverges, update this handoff after implementation rather than appending more historical detail here.

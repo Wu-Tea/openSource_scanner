@@ -525,3 +525,22 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Implement the revenue pipeline first.
 - Recreate automation only after it can produce judgment and action outputs, not just market-pain Markdown records.
+
+### 2026-06-01 - Context reset to revenue pipeline mainline
+
+**Goal:** Clean project context so future same-directory sessions do not follow old project goals.
+
+**What changed:**
+
+- Rewrote `.agent-context/handoff.md` around the Revenue Pipeline as the current objective.
+- Marked old B2B, workflow-family, vertical-business, and ERP-adjacent scans as historical context instead of the mainline.
+- Recorded that `market-pain-radar` is inactive and should not be recreated until the pipeline includes judgment and execution layers.
+- Added `.agent-context/decisions/DEC-2026-06-01-001-revenue-pipeline-mainline.md`.
+
+**Current mainline:**
+
+`public pain signals -> opportunity judge -> bet selector -> experiment plan -> execution artifacts -> revenue review`
+
+**Follow-up:**
+
+- Implement `opportunity-judge`, `bet-selector`, experiment planning, and revenue review before recreating recurring automation.
