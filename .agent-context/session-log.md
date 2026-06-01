@@ -479,3 +479,29 @@ This file is the primary session-history entry point. Detailed pre-compaction hi
 
 - Review the first few generated records for signal quality.
 - If the record format works, implement first-class forum/source collectors and `--focus consumer` ranking inside the CLI.
+
+### 2026-06-01 - Manual market-pain radar smoke run
+
+**Goal:** Execute one market-pain radar run immediately using Chrome on Windows.
+
+**What ran:**
+
+- Used `C:\Program Files\Google\Chrome\Application\chrome.exe` in headless mode.
+- Touched 12 public sources: V2EX nodes, HN Ask/Show, Reddit RSS feeds, itch.io tag pages, and Steam desktop-pet search.
+- Collected 177 public items.
+- Searched GitHub for related open-source tools under five themes.
+- Wrote `records/market-pain/2026-06-01-1829.md`.
+- Appended `records/market-pain/index.md`.
+
+**Observed themes:**
+
+- AI learning / study friction.
+- Desktop companion / focus loop.
+- Micro-game / idle / browser entertainment.
+- Creator toy / meme / avatar.
+- Job search / resume uncertainty.
+
+**Correction captured:**
+
+- User reminded that the workspace is Windows. Future commands, scripts, and library choices should use Windows/PowerShell-compatible syntax by default.
+- Avoid Unix-only heredocs such as `python <<'PY'`; use PowerShell here-strings, checked-in scripts, or native PowerShell commands.

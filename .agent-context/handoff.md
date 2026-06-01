@@ -77,4 +77,5 @@ Monitor `records/market-pain/` as the new recurring research feed. Next product 
 ## Notes
 
 - Do not commit secrets such as `GITHUB_TOKEN`, cookies, API keys, or private user data.
+- The workspace is Windows/PowerShell. Use Windows-compatible commands and libraries by default; avoid Unix-only shell syntax such as `python <<'PY'`.
 - Re-check this handoff if repository state diverges from the plan or if a worktree merge fails.

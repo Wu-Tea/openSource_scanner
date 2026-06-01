@@ -32,6 +32,7 @@ English communities:
 
 ## Run Rules
 
+- This workspace runs on Windows. Local commands and examples should use PowerShell-compatible syntax. Avoid Unix-only heredocs such as `python <<'PY'`; prefer PowerShell here-strings like `@' ... '@ | uv run python -`, checked-in scripts, or native PowerShell commands.
 - Use public pages, RSS feeds, official APIs, or normal search results where possible.
 - Do not log in, bypass paywalls, scrape private data, collect personal identities, or store sensitive personal information.
 - Keep request volume low. Prefer 5-10 high-signal pages per run over broad crawling.
